@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Dark Theme Lock & Viewport Defaults */
+html, body, #root {
+  background-color: #020617 !important; /* bg-slate-950 */
+  color: #f8fafc !important; /* text-slate-50 */
+  color-scheme: dark;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+/* Custom Sleek Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b; /* slate-800 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155; /* slate-700 */
+}
+
+/* Global text selection styles matching brand */
+::selection {
+  background-color: #f59e0b; /* amber-500 */
+  color: #020617;
+}
