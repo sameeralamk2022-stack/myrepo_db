@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, ShoppingBag, Trash2, Plus, Minus, QrCode, Banknote, 
-  CheckCircle2, AlertCircle, Clock, ArrowRight, ShieldCheck 
+  CheckCircle2, AlertCircle, Clock, ArrowRight 
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
@@ -11,7 +11,6 @@ export function CartDrawer() {
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [showTimePopup, setShowTimePopup] = useState(false);
-  const [customerDetails, setCustomerDetails] = useState({ name: '', phone: '', address: '' });
 
   // Timing Logic: 10:00 AM to 11:30 PM
   const checkOrderTiming = () => {
@@ -73,7 +72,7 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-screen max-w-md bg-slate-950 border-l border-slate-800 text-white flex flex-col shadow-2xl"
+            className="w-screen max-w-md bg-slate-950 border-l border-slate-800 text-white flex flex-col shadow-2xl relative"
           >
             {/* Header */}
             <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
@@ -88,7 +87,7 @@ export function CartDrawer() {
               </div>
               <button 
                 onClick={() => setIsCartOpen(false)}
-                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -96,7 +95,7 @@ export function CartDrawer() {
 
             {/* Time Warning Popup Modal */}
             {showTimePopup && (
-              <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6 text-center">
+              <div className="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-6 text-center">
                 <div className="bg-slate-900 border border-amber-500/30 rounded-3xl p-6 space-y-4 shadow-2xl max-w-sm">
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400">
                     <Clock className="w-7 h-7 animate-pulse" />
@@ -107,7 +106,7 @@ export function CartDrawer() {
                   </p>
                   <button
                     onClick={() => setShowTimePopup(false)}
-                    className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-black text-xs transition-all shadow-lg"
+                    className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-black text-xs transition-all shadow-lg cursor-pointer"
                   >
                     Got It
                   </button>
@@ -142,6 +141,9 @@ export function CartDrawer() {
                             {item.stall || 'Local Stall'}
                           </span>
                           <h4 className="font-bold text-xs text-white">{item.name}</h4>
+                          {item.customNotes && (
+                            <p className="text-[10px] text-amber-300/80 italic">Note: {item.customNotes}</p>
+                          )}
                           <span className="text-xs font-bold text-amber-400">₹{item.price || 150}</span>
                         </div>
 
@@ -149,21 +151,21 @@ export function CartDrawer() {
                           <div className="flex items-center space-x-1.5 bg-slate-950 border border-slate-800 rounded-xl p-1">
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white"
+                              className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white cursor-pointer"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
                             <span className="text-xs font-black w-5 text-center">{item.quantity}</span>
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white"
+                              className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white cursor-pointer"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
                           </div>
                           <button 
                             onClick={() => removeFromCart(item.id)}
-                            className="text-slate-500 hover:text-rose-400 transition-colors"
+                            className="text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -176,13 +178,13 @@ export function CartDrawer() {
                 {/* Footer & Checkout Section */}
                 {cart.length > 0 && (
                   <div className="p-6 border-t border-slate-800 bg-slate-900/80 space-y-4">
-                    {/* Payment Options (Single QR Code UI) */}
+                    {/* Payment Options */}
                     <div className="space-y-3">
                       <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Select Payment Method</label>
                       <div className="grid grid-cols-2 gap-3">
                         <button
                           onClick={() => setPaymentMethod('upi')}
-                          className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all ${
+                          className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
                             paymentMethod === 'upi' 
                               ? 'bg-amber-500/10 border-amber-500 text-amber-400 shadow-lg' 
                               : 'bg-slate-950 border-slate-800 text-slate-400'
@@ -203,7 +205,7 @@ export function CartDrawer() {
                             }
                             setPaymentMethod('cod');
                           }}
-                          className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all ${
+                          className={`p-3 rounded-2xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
                             paymentMethod === 'cod' 
                               ? 'bg-amber-500/10 border-amber-500 text-amber-400 shadow-lg' 
                               : 'bg-slate-950 border-slate-800 text-slate-400'
@@ -214,10 +216,10 @@ export function CartDrawer() {
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">COD</span>
                           </div>
                           <span className="text-xs font-black">Cash on Delivery</span>
-                        </>
+                        </button>
                       </div>
 
-                      {/* UPI QR Display Box (Only ONE clean QR section) */}
+                      {/* Single Clean UPI QR Display */}
                       {paymentMethod === 'upi' && (
                         <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center space-x-4">
                           <div className="w-16 h-16 bg-white p-1.5 rounded-xl flex-shrink-0 shadow-md">
