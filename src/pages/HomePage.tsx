@@ -72,7 +72,7 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-            Welcome, <span className="text-amber-400">Nauman Alam Khan!</span>
+            Welcome, <span className="text-amber-400">{displayName}!</span>
           </h1>
 
           {/* Theme Line */}

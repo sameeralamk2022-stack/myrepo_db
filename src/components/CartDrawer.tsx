@@ -1,11 +1,33 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, AlertCircle, Clock } from 'lucide-react';
+import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, AlertCircle, Clock, MapPin, Navigation } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { QR_CODE_URL } from '@/lib/constants';
+
+function getISTMinutes() {
+  try {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const istDate = new Date(utc + (3600000 * 5.5));
+    return istDate.getHours() * 60 + istDate.getMinutes();
+  } catch {
+    return 600;
+  }
+}
+
+function isWithinOperatingHours() {
+  const totalMinutes = getISTMinutes();
+  return totalMinutes >= 600 && totalMinutes < 1410;
+}
+
+function getDeliveryRate() {
+  const totalMinutes = getISTMinutes();
+  const isDayTime = totalMinutes >= 600 && totalMinutes < 1080;
+  return { isDayTime, ratePerKm: isDayTime ? 10 : 12 };
+}
 
 export function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, updateQuantity, clearCart, addOrder } = useApp();
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
-  const [showUpiQr, setShowUpiQr] = useState(false);
   const [address, setAddress] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -13,31 +35,33 @@ export function CartDrawer() {
 
   const onClose = () => setIsCartOpen(false);
   const cartItems = cart;
-  const subtotal = cartItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = subtotal > 0 ? 25 : 0;
-  const total = subtotal + deliveryFee;
-
-  const currentHour = new Date().getHours();
-  const isOperatingHours = currentHour >= 10 && currentHour < 23.5;
+  const canOrder = isWithinOperatingHours();
+  const { isDayTime, ratePerKm } = getDeliveryRate();
 
   const handleWhatsAppDispatch = () => {
     if (cartItems.length === 0) return;
+    if (!canOrder) {
+      alert('Orders are only accepted between 10:00 AM and 11:30 PM. Please try again during operating hours.');
+      return;
+    }
     if (!address.trim()) {
       alert('Please enter your delivery address.');
       return;
     }
 
     const orderId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
-    const itemsList = cartItems.map((i: any) => `• ${i.name} (${i.quantity}x) - ₹${i.price * i.quantity} ${i.customDetails ? `[${i.customDetails}]` : ''}`).join('\n');
+    const itemsList = cartItems.map((i: any) => `• ${i.name} (${i.quantity}x) ${i.customDetails ? `[${i.customDetails}]` : ''}`).join('\n');
+
+    const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
     const whatsappMessage = encodeURIComponent(
       `🛍️ *NEW MEERUT BITES ORDER* (#${orderId})\n\n` +
       `*Delivery Address:* ${address}\n` +
+      `*Google Maps Location:* ${mapsLink}\n` +
+      `*Delivery Rate:* ${isDayTime ? 'Day ₹10/km' : 'Night ₹12/km'}\n` +
       `*Payment Mode:* ${paymentMethod.toUpperCase()}\n\n` +
       `*Items:*\n${itemsList}\n\n` +
-      `*Subtotal:* ₹${subtotal}\n` +
-      `*Delivery Fee:* ₹${deliveryFee}\n` +
-      `*Total Amount:* ₹${total}\n\n` +
+      `*Note:* Item prices to be decided by captain.\n\n` +
       `🕒 *Status:* Dispatched to Kitchen`
     );
 
@@ -47,9 +71,11 @@ export function CartDrawer() {
       id: orderId,
       stallName: cartItems[0]?.stallName || 'Meerut Bites Partner Stall',
       items: cartItems.map((i: any) => `${i.name} (${i.quantity}x)`).join(', '),
-      total: total,
+      total: 0,
       status: 'Preparing in Kitchen',
-      time: 'Just now'
+      time: 'Just now',
+      address,
+      deliveryRate: isDayTime ? '₹10/km (Day)' : '₹12/km (Night)',
     };
 
     addOrder(newOrder);
@@ -75,10 +101,10 @@ export function CartDrawer() {
           </button>
         </div>
 
-        {!isOperatingHours && (
-          <div className="mx-6 mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center space-x-2 text-amber-400 text-xs">
+        {!canOrder && (
+          <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center space-x-2 text-rose-400 text-xs">
             <Clock className="w-4 h-4 flex-shrink-0" />
-            <span>Note: Standard operating hours are 10:00 AM – 11:30 PM.</span>
+            <span className="font-bold">Orders are closed. Captain DB accepts orders only from 10:00 AM to 11:30 PM.</span>
           </div>
         )}
 
@@ -113,7 +139,7 @@ export function CartDrawer() {
                     <span className="text-[10px] text-amber-400 font-bold uppercase">{item.stallName}</span>
                     <h4 className="text-xs font-black text-white truncate">{item.name}</h4>
                     {item.customDetails && <span className="text-[10px] text-slate-400 block">{item.customDetails}</span>}
-                    <span className="text-xs font-bold text-amber-400">₹{item.price}</span>
+                    <span className="text-[10px] text-amber-400/80 font-bold uppercase tracking-wider">Price decided by captain</span>
                   </div>
                   <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 rounded-xl p-1">
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-6 h-6 rounded-lg bg-slate-800 text-white flex items-center justify-center cursor-pointer">-</button>
@@ -132,20 +158,31 @@ export function CartDrawer() {
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
                 />
+                {address.trim() && (
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    <span>Open this location in Google Maps</span>
+                  </a>
+                )}
               </div>
 
               <div className="space-y-3 pt-2">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-300 block">Payment Method</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => { setPaymentMethod('upi'); setShowUpiQr(true); }}
+                    onClick={() => setPaymentMethod('upi')}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 cursor-pointer ${paymentMethod === 'upi' ? 'bg-amber-500/10 border-amber-500 text-amber-400' : 'bg-slate-950 border-slate-800 text-slate-400'}`}
                   >
                     <QrCode className="w-3.5 h-3.5" />
                     <span>UPI QR Pay</span>
                   </button>
                   <button
-                    onClick={() => { setPaymentMethod('cod'); setShowUpiQr(false); }}
+                    onClick={() => setPaymentMethod('cod')}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 cursor-pointer ${paymentMethod === 'cod' ? 'bg-amber-500/10 border-amber-500 text-amber-400' : 'bg-slate-950 border-slate-800 text-slate-400'}`}
                   >
                     <AlertCircle className="w-3.5 h-3.5" />
@@ -153,14 +190,25 @@ export function CartDrawer() {
                   </button>
                 </div>
 
-                {showUpiQr && (
+                {paymentMethod === 'upi' && (
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-center space-y-2">
-                    <div className="w-32 h-32 bg-white rounded-xl mx-auto p-2 flex items-center justify-center">
-                      <QrCode className="w-28 h-28 text-slate-950" />
+                    <div className="w-36 h-36 bg-white rounded-xl mx-auto p-2 flex items-center justify-center">
+                      <img src={QR_CODE_URL} alt="UPI QR Code" className="w-full h-full rounded-lg" />
                     </div>
                     <span className="text-[10px] text-amber-400 font-bold block">Scan QR code using GPay/PhonePe/Paytm</span>
                   </div>
                 )}
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
+                <div className="flex items-center gap-2 text-[11px] font-black text-amber-400 uppercase tracking-wider">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Delivery Rate</span>
+                </div>
+                <p className="text-xs text-slate-300 font-bold">
+                  {isDayTime ? 'Day Rate (10 AM - 6 PM): ₹10/km' : 'Night Rate (6 PM - 10 AM): ₹12/km'}
+                </p>
+                <p className="text-[10px] text-slate-500">Final delivery charge calculated by captain based on distance.</p>
               </div>
             </>
           )}
@@ -168,28 +216,23 @@ export function CartDrawer() {
 
         {cartItems.length > 0 && !isSuccess && (
           <div className="p-6 border-t border-slate-800 space-y-4 bg-slate-900">
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-slate-400">
-                <span>Subtotal</span>
-                <span className="font-bold text-white">₹{subtotal}</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span>Delivery & Handling</span>
-                <span className="font-bold text-white">₹{deliveryFee}</span>
-              </div>
-              <div className="flex justify-between sm font-black pt-2 border-t border-slate-800">
-                <span className="text-white">Total Amount</span>
-                <span className="text-amber-400">₹{total}</span>
-              </div>
+            <div className="text-center text-[11px] text-slate-400 font-bold">
+              Item prices and delivery fee will be decided by Captain DB.
             </div>
 
-            <button
-              onClick={handleWhatsAppDispatch}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20 cursor-pointer transition-all"
-            >
-              <Send className="w-4 h-4" />
-              <span>Dispatch Order via WhatsApp</span>
-            </button>
+            {canOrder ? (
+              <button
+                onClick={handleWhatsAppDispatch}
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20 cursor-pointer transition-all"
+              >
+                <Send className="w-4 h-4" />
+                <span>Dispatch Order via WhatsApp</span>
+              </button>
+            ) : (
+              <div className="w-full py-4 bg-rose-500/20 border border-rose-500/40 text-rose-300 rounded-2xl font-black text-xs text-center">
+                Ordering closed - Available 10:00 AM to 11:30 PM only
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -33,7 +33,7 @@ export function SimpleOrderPage({ stall, onBack, onAddToCart }: SimpleOrderPageP
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-8 bg-slate-950 min-h-screen text-white">
-      <button 
+      <button
         onClick={onBack}
         className="inline-flex items-center space-x-2 text-xs font-bold text-amber-400 bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
       >
@@ -66,21 +66,22 @@ export function SimpleOrderPage({ stall, onBack, onAddToCart }: SimpleOrderPageP
           <div className="space-y-6">
             <div className="space-y-3">
               <label className="text-xs font-black uppercase tracking-wider text-slate-300">Choose Signature Item</label>
+              <p className="text-[11px] text-amber-400/80 font-bold">Price will be decided by the delivery captain.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {stall.items.map((item) => (
                   <div
                     key={item.id}
                     onClick={() => setSelectedItem(item)}
                     className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center space-x-3 ${
-                      selectedItem.id === item.id 
-                        ? 'bg-amber-500/10 border-amber-500 text-white' 
+                      selectedItem.id === item.id
+                        ? 'bg-amber-500/10 border-amber-500 text-white'
                         : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700'
                     }`}
                   >
                     <img src={item.image} alt={item.name} className="w-12 h-12 rounded-xl object-cover" />
                     <div>
                       <h4 className="text-xs font-black text-white">{item.name}</h4>
-                      <span className="text-xs font-bold text-amber-400">₹{item.price}</span>
+                      <span className="text-[10px] text-amber-400/80 font-bold uppercase tracking-wider">Price decided by captain</span>
                     </div>
                   </div>
                 ))}
@@ -89,8 +90,8 @@ export function SimpleOrderPage({ stall, onBack, onAddToCart }: SimpleOrderPageP
 
             <div className="pt-6 border-t border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs text-slate-400">Selected Item Price</span>
-                <p className="text-xl font-black text-amber-400">₹{selectedItem.price}</p>
+                <span className="text-xs text-slate-400">Selected Item</span>
+                <p className="text-lg font-black text-amber-400">{selectedItem.name}</p>
               </div>
               <button
                 onClick={handleQuickAdd}
@@ -106,3 +107,5 @@ export function SimpleOrderPage({ stall, onBack, onAddToCart }: SimpleOrderPageP
     </div>
   );
 }
+
+export default SimpleOrderPage;
