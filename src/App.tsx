@@ -5,6 +5,7 @@ import { CartDrawer } from '@/components/CartDrawer';
 import { WhatsAppChatWidget } from '@/components/WhatsAppChatWidget';
 import { HomePage } from '@/pages/HomePage';
 import { StallsPage } from '@/pages/StallsPage';
+import { PersonalOrderPage } from '@/pages/PersonalOrderPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { OrdersPage } from '@/pages/OrdersPage';
 import { SettingsPage } from '@/pages/SettingsPage';
@@ -59,7 +60,12 @@ function AppContent() {
       <main className="flex-1 flex flex-col overflow-y-auto">
         {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
         {currentPage === 'stalls' && <StallsPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'personal' && <StallsPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'personal' && (
+          <PersonalOrderPage
+            onBack={() => setCurrentPage('stalls')}
+            onProceedToOrders={() => setCurrentPage('orders')}
+          />
+        )}
         {currentPage === 'dashboard' && <DashboardPage />}
         {currentPage === 'orders' && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
         {currentPage === 'settings' && <SettingsPage />}
