@@ -45,12 +45,15 @@ export function SettingsPage(): JSX.Element {
   const handleSendRatingToWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
     const captainNumber = '919568358120';
-    const message = encodeURIComponent(
-      `⭐ *APP RATING & FEEDBACK - MEERUT BITES* ⭐\n\n` +
-      `🌟 *Rating:* ${generalRating} / 5 Stars\n` +
-      `💬 *Feedback:* ${feedbackText || 'No additional comments'}\n\n` +
-      `_Sent from Meerut Bites Settings Panel_`
-    );
+    const lines = [
+      '⭐ *APP RATING & FEEDBACK - MEERUT BITES* ⭐',
+      '',
+      `🌟 *Rating:* ${generalRating} / 5 Stars`,
+      `💬 *Feedback:* ${feedbackText || 'No additional comments'}`,
+      '',
+      '_Sent from Meerut Bites Settings Panel_'
+    ];
+    const message = encodeURIComponent(lines.join('\n'));
     window.open(`https://wa.me/\({captainNumber}?text=\){message}`, '_blank');
   };
 
