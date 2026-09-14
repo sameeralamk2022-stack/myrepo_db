@@ -1,38 +1,22 @@
 import React, { useState } from 'react';
 import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, AlertCircle, Clock } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  stallName: string;
-  customDetails?: string;
-  image: string;
-}
-
-interface CartDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  cartItems: CartItem[];
-  onUpdateQty: (id: string, qty: number) => void;
-  onClearCart: () => void;
-  onOrderPlaced: (order: any) => void;
-}
-
-export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCart, onOrderPlaced }: CartDrawerProps) {
+export function CartDrawer() {
+  const { cart, isCartOpen, setIsCartOpen, updateQuantity, clearCart, addOrder } = useApp();
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [showUpiQr, setShowUpiQr] = useState(false);
   const [address, setAddress] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isCartOpen) return null;
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const onClose = () => setIsCartOpen(false);
+  const cartItems = cart;
+  const subtotal = cartItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
   const deliveryFee = subtotal > 0 ? 25 : 0;
   const total = subtotal + deliveryFee;
 
-  // Operating hours check (10:00 AM to 11:30 PM)
   const currentHour = new Date().getHours();
   const isOperatingHours = currentHour >= 10 && currentHour < 23.5;
 
@@ -44,8 +28,8 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
     }
 
     const orderId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
-    const itemsList = cartItems.map(i => `• ${i.name} (${i.quantity}x) - ₹${i.price * i.quantity} ${i.customDetails ? `[${i.customDetails}]` : ''}`).join('\n');
-    
+    const itemsList = cartItems.map((i: any) => `• ${i.name} (${i.quantity}x) - ₹${i.price * i.quantity} ${i.customDetails ? `[${i.customDetails}]` : ''}`).join('\n');
+
     const whatsappMessage = encodeURIComponent(
       `🛍️ *NEW MEERUT BITES ORDER* (#${orderId})\n\n` +
       `*Delivery Address:* ${address}\n` +
@@ -57,23 +41,22 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
       `🕒 *Status:* Dispatched to Kitchen`
     );
 
-    // Open WhatsApp vendor dispatch
     window.open(`https://wa.me/?text=${whatsappMessage}`, '_blank');
 
     const newOrder = {
       id: orderId,
       stallName: cartItems[0]?.stallName || 'Meerut Bites Partner Stall',
-      items: cartItems.map(i => `${i.name} (${i.quantity}x)`).join(', '),
+      items: cartItems.map((i: any) => `${i.name} (${i.quantity}x)`).join(', '),
       total: total,
       status: 'Preparing in Kitchen',
       time: 'Just now'
     };
 
-    onOrderPlaced(newOrder);
+    addOrder(newOrder);
     setIsSuccess(true);
     setTimeout(() => {
       setIsSuccess(false);
-      onClearCart();
+      clearCart();
       onClose();
     }, 2000);
   };
@@ -81,8 +64,7 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-sm flex justify-end">
       <div className="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-        
-        {/* Drawer Header */}
+
         <div className="p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <ShoppingBag className="w-5 h-5 text-amber-400" />
@@ -93,7 +75,6 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
           </button>
         </div>
 
-        {/* Operating Hours Alert */}
         {!isOperatingHours && (
           <div className="mx-6 mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center space-x-2 text-amber-400 text-xs">
             <Clock className="w-4 h-4 flex-shrink-0" />
@@ -101,7 +82,6 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
           </div>
         )}
 
-        {/* Cart Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {isSuccess ? (
             <div className="py-20 text-center space-y-4">
@@ -120,13 +100,13 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
             <>
               <div className="flex items-center justify-between pb-2">
                 <span className="text-xs font-black uppercase text-slate-400">Selected Items ({cartItems.length})</span>
-                <button onClick={onClearCart} className="text-xs text-red-400 hover:underline flex items-center space-x-1 cursor-pointer">
+                <button onClick={clearCart} className="text-xs text-red-400 hover:underline flex items-center space-x-1 cursor-pointer">
                   <Trash2 className="w-3 h-3" />
                   <span>Clear All</span>
                 </button>
               </div>
 
-              {cartItems.map((item) => (
+              {cartItems.map((item: any) => (
                 <div key={`${item.id}-${item.customDetails}`} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
                   <img src={item.image} alt={item.name} className="w-14 h-14 rounded-xl object-cover bg-slate-900" />
                   <div className="flex-1 min-w-0">
@@ -136,9 +116,9 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
                     <span className="text-xs font-bold text-amber-400">₹{item.price}</span>
                   </div>
                   <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 rounded-xl p-1">
-                    <button onClick={() => onUpdateQty(item.id, item.quantity - 1)} className="w-6 h-6 rounded-lg bg-slate-800 text-white flex items-center justify-center cursor-pointer">-</button>
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-6 h-6 rounded-lg bg-slate-800 text-white flex items-center justify-center cursor-pointer">-</button>
                     <span className="w-5 text-center text-xs font-black">{item.quantity}</span>
-                    <button onClick={() => onUpdateQty(item.id, item.quantity + 1)} className="w-6 h-6 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center cursor-pointer">+</button>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-6 h-6 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center cursor-pointer">+</button>
                   </div>
                 </div>
               ))}
@@ -186,7 +166,6 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
           )}
         </div>
 
-        {/* Footer / Summary */}
         {cartItems.length > 0 && !isSuccess && (
           <div className="p-6 border-t border-slate-800 space-y-4 bg-slate-900">
             <div className="space-y-2 text-xs">
@@ -198,7 +177,7 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
                 <span>Delivery & Handling</span>
                 <span className="font-bold text-white">₹{deliveryFee}</span>
               </div>
-              <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-800">
+              <div className="flex justify-between sm font-black pt-2 border-t border-slate-800">
                 <span className="text-white">Total Amount</span>
                 <span className="text-amber-400">₹{total}</span>
               </div>
@@ -213,8 +192,9 @@ export function CartDrawer({ isOpen, onClose, cartItems, onUpdateQty, onClearCar
             </button>
           </div>
         )}
-
       </div>
     </div>
   );
 }
+
+export default CartDrawer;

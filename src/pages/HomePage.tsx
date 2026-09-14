@@ -1,25 +1,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ShoppingBag, 
+import {
+  ShoppingBag,
   ShoppingBasket,
-  Utensils, 
-  Sparkles, 
-  Clock, 
-  ShieldCheck, 
-  MapPin, 
-  ArrowRight, 
-  Flame, 
-  LayoutDashboard, 
-  Package, 
+  Utensils,
+  Sparkles,
+  Clock,
+  ShieldCheck,
+  MapPin,
+  ArrowRight,
+  Flame,
+  LayoutDashboard,
+  Package,
   Settings as SettingsIcon
 } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 interface HomePageProps {
   setCurrentPage: (page: 'home' | 'stalls' | 'dashboard' | 'orders' | 'custom' | 'settings' | 'simple') => void;
 }
 
 export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
+  const { profile } = useApp();
+  const displayName = profile.name || 'Guest';
   // Time & Delivery Rate Logic (IST: Day ₹10/km, Night ₹12/km, Open 10:00 AM to 11:30 PM)
   const getISTDetails = () => {
     try {

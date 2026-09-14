@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react';
-import { AppProvider } from '@/context/AppContext';
+import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
+import { AppProvider, useApp } from '@/context/AppContext';
 import { Navbar } from '@/components/Navbar';
 import { CartDrawer } from '@/components/CartDrawer';
 import { WhatsAppChatWidget } from '@/components/WhatsAppChatWidget';
@@ -7,9 +7,7 @@ import { HomePage } from '@/pages/HomePage';
 import { StallsPage } from '@/pages/StallsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { OrdersPage } from '@/pages/OrdersPage';
-import { CustomOrderPage } from '@/pages/CustomOrderPage';
 import { SettingsPage } from '@/pages/SettingsPage';
-import { SimpleOrder } from '@/pages/SimpleOrder';
 import { LoginPage } from '@/pages/LoginPage';
 import { PaymentCard } from '@/components/PaymentCard';
 
@@ -18,15 +16,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     super(props);
     this.state = { hasError: false, error: null };
   }
-
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
   }
-
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
   }
-
   render() {
     if (this.state.hasError) {
       return (
@@ -50,61 +45,51 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   }
 }
 
-export function App() {
-  const [currentPage, setCurrentPage] = useState<string>('login');
+function AppContent() {
+  const { profile } = useApp();
+  const [currentPage, setCurrentPage] = useState<string>(profile?.name ? 'home' : 'login');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cod' | 'upi'>('upi');
 
-  useEffect(() => {
-    const savedProfile = localStorage.getItem('mb_profile');
-    if (savedProfile) {
-      try {
-        const parsed = JSON.parse(savedProfile);
-        if (parsed && parsed.name) {
-          setCurrentPage('home');
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, []);
+  return (
+    <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
+      {currentPage !== 'login' && (
+        <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      )}
 
+      <main className="flex-1 flex flex-col overflow-y-auto">
+        {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'stalls' && <StallsPage />}
+        {currentPage === 'custom' && <StallsPage />}
+        {currentPage === 'simple' && <StallsPage />}
+        {currentPage === 'dashboard' && <DashboardPage />}
+        {currentPage === 'orders' && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
+        {currentPage === 'settings' && <SettingsPage />}
+        {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'payment' && (
+          <div className="max-w-xl mx-auto p-4 py-8">
+            <PaymentCard
+              selectedMethod={selectedPaymentMethod}
+              setSelectedMethod={setSelectedPaymentMethod}
+            />
+          </div>
+        )}
+      </main>
+
+      {currentPage !== 'login' && (
+        <>
+          <CartDrawer />
+          <WhatsAppChatWidget />
+        </>
+      )}
+    </div>
+  );
+}
+
+export function App() {
   return (
     <ErrorBoundary>
       <AppProvider>
-        {/* Native Mobile-First PWA Container (Fits 320px, 375px, and all mobile screens perfectly) */}
-        <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
-          
-          {/* Navbar - Completely hidden on login page */}
-          {currentPage !== 'login' && (
-            <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-          )}
-          
-          <main className="flex-1 flex flex-col overflow-y-auto">
-            {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
-            {currentPage === 'stalls' && <StallsPage />}
-            {currentPage === 'dashboard' && <DashboardPage />}
-            {currentPage === 'orders' && <OrdersPage />}
-            {currentPage === 'custom' && <CustomOrderPage />}
-            {currentPage === 'settings' && <SettingsPage setCurrentPage={setCurrentPage} />}
-            {currentPage === 'simple' && <SimpleOrder setCurrentPage={setCurrentPage} />}
-            {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
-            {currentPage === 'payment' && (
-              <div className="max-w-xl mx-auto p-4 py-8">
-                <PaymentCard 
-                  selectedMethod={selectedPaymentMethod} 
-                  setSelectedMethod={setSelectedPaymentMethod} 
-                />
-              </div>
-            )}
-          </main>
-
-          {currentPage !== 'login' && (
-            <>
-              <CartDrawer />
-              <WhatsAppChatWidget />
-            </>
-          )}
-        </div>
+        <AppContent />
       </AppProvider>
     </ErrorBoundary>
   );

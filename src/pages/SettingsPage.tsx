@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { Settings, Star, AlertTriangle, Send, Code, Phone, MessageCircle } from 'lucide-react';
+import { Settings, Star, AlertTriangle, Send, Code, Phone, MessageCircle, User, Save, CheckCircle } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 export function SettingsPage(): JSX.Element {
+  const { profile, setProfile } = useApp();
+  const [name, setName] = useState(profile.name || '');
+  const [phone, setPhone] = useState(profile.phone || '');
+  const [saved, setSaved] = useState(false);
   const [generalRating, setGeneralRating] = useState<number>(5);
   const [feedbackText, setFeedbackText] = useState('');
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfile({ ...profile, name: name.trim(), phone: phone.trim() });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
 
   const getISTStatus = () => {
     try {
@@ -11,12 +23,10 @@ export function SettingsPage(): JSX.Element {
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
       const istDate = new Date(utc + (3600000 * 5.5));
       const totalMinutes = istDate.getHours() * 60 + istDate.getMinutes();
-      
       const isClosed = totalMinutes >= 1410 || totalMinutes < 360;
-      const isDay = totalMinutes >= 600 && totalMinutes < 1080;
-      return { isClosed, isDay };
+      return { isClosed };
     } catch {
-      return { isClosed: false, isDay: true };
+      return { isClosed: false };
     }
   };
 
@@ -41,8 +51,43 @@ export function SettingsPage(): JSX.Element {
           <Settings className="w-6 h-6 text-amber-400" />
           <span>App Settings & Operational Rules</span>
         </h1>
-        <p className="text-xs text-slate-400">Configure delivery rules, operating hours, and app feedback.</p>
+        <p className="text-xs text-slate-400">Configure your profile, delivery rules, operating hours, and app feedback.</p>
       </div>
+
+      {/* Profile Editing Section */}
+      <form onSubmit={handleSaveProfile} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+        <h3 className="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
+          <User className="w-4 h-4" />
+          <span>Edit Your Profile</span>
+        </h3>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-400 mb-1">Full Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-bold"
+            required
+          />
+          <p className="text-[10px] text-slate-500 mt-1">This name appears in the welcome message on the home page.</p>
+        </div>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-400 mb-1">Phone Number</label>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-bold"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
+        >
+          {saved ? <><CheckCircle className="w-4 h-4 text-emerald-600" /><span>Saved!</span></> : <><Save className="w-4 h-4" /><span>Save Profile Changes</span></>}
+        </button>
+      </form>
 
       {/* Operating Hours & Charges */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
@@ -51,19 +96,18 @@ export function SettingsPage(): JSX.Element {
           <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
             <span className="text-slate-400 font-bold block">Current Status:</span>
             <span className={`font-black ${isClosed ? 'text-rose-400' : 'text-emerald-400'}`}>
-              {isClosed ? '🔴 Closed (After 11:30 PM)' : '🟢 Open for Orders'}
+              {isClosed ? 'Closed (After 11:30 PM)' : 'Open for Orders'}
             </span>
           </div>
         </div>
-
         <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2 text-xs">
           <span className="text-amber-400 font-black block uppercase tracking-wider text-[10px]">Delivery Rate Schedule</span>
           <div className="flex justify-between text-slate-300 font-bold">
-            <span>☀️ Day Rate (10:00 AM - 6:00 PM):</span>
+            <span>Day Rate (10:00 AM - 6:00 PM):</span>
             <span className="text-amber-400">₹10 / km</span>
           </div>
           <div className="flex justify-between text-slate-300 font-bold">
-            <span>🌙 Night Rate (6:00 PM - 10:30 AM):</span>
+            <span>Night Rate (6:00 PM - 10:30 AM):</span>
             <span className="text-amber-400">₹12 / km</span>
           </div>
         </div>
@@ -117,10 +161,9 @@ export function SettingsPage(): JSX.Element {
         </div>
       </div>
 
-      {/* App Rating Form sent to Captain WhatsApp */}
+      {/* App Rating Form */}
       <form onSubmit={handleSendRatingToWhatsApp} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
         <h3 className="text-xs font-black text-amber-400 uppercase tracking-widest">Rate Meerut Bites App (Send to Captain)</h3>
-        
         <div className="flex space-x-2">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -133,7 +176,6 @@ export function SettingsPage(): JSX.Element {
             </button>
           ))}
         </div>
-
         <input
           type="text"
           placeholder="Write your feedback for the captain..."
@@ -141,7 +183,6 @@ export function SettingsPage(): JSX.Element {
           onChange={(e) => setFeedbackText(e.target.value)}
           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-bold"
         />
-
         <button
           type="submit"
           className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2"

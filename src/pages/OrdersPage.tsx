@@ -1,12 +1,14 @@
 import React from 'react';
-import { Clock, CheckCircle2 } from 'lucide-react';
+import { Clock, CheckCircle2, Package } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 interface OrdersPageProps {
-  orders: any[];
-  onNavigateStalls: () => void;
+  onNavigateStalls?: () => void;
 }
 
-export function OrdersPage({ orders, onNavigateStalls }: OrdersPageProps) {
+export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
+  const { orders } = useApp();
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8 bg-slate-950 min-h-screen text-white">
       <div className="border-b border-slate-800 pb-6">
@@ -16,10 +18,13 @@ export function OrdersPage({ orders, onNavigateStalls }: OrdersPageProps) {
 
       {orders.length === 0 ? (
         <div className="py-20 text-center space-y-4">
+          <Package className="w-12 h-12 text-slate-700 mx-auto" />
           <p className="text-xs text-slate-400">No active orders right now.</p>
-          <button onClick={onNavigateStalls} className="px-5 py-2.5 bg-amber-500 text-slate-950 rounded-xl font-bold text-xs cursor-pointer">
-            Order Something Delicious
-          </button>
+          {onNavigateStalls && (
+            <button onClick={onNavigateStalls} className="px-5 py-2.5 bg-amber-500 text-slate-950 rounded-xl font-bold text-xs cursor-pointer">
+              Order Something Delicious
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-4">
@@ -33,12 +38,10 @@ export function OrdersPage({ orders, onNavigateStalls }: OrdersPageProps) {
                   <Clock className="w-3.5 h-3.5 mr-1 text-amber-400" /> {order.time}
                 </span>
               </div>
-
               <div className="space-y-1">
                 <h3 className="text-lg font-black text-white">{order.stallName}</h3>
                 <p className="text-xs text-slate-300">{order.items}</p>
               </div>
-
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold">
                   <CheckCircle2 className="w-4 h-4" />
@@ -53,3 +56,5 @@ export function OrdersPage({ orders, onNavigateStalls }: OrdersPageProps) {
     </div>
   );
 }
+
+export default OrdersPage;

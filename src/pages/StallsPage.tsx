@@ -4,12 +4,9 @@ import {
   Store, Star, Search, MapPin, Utensils, ArrowRight, 
   Clock, ChevronRight 
 } from 'lucide-react';
-import { CustomOrderPage } from '../components/CustomOrderPage';
-import { SimpleOrderPage } from '../components/SimpleOrderPage';
-
-interface StallsPageProps {
-  onAddToCart: (item: any, quantity: number, customDetails: string) => void;
-}
+import { CustomOrderPage } from '@/pages/CustomOrderPage';
+import { SimpleOrderPage } from '@/pages/SimpleOrder';
+import { useApp } from '@/context/AppContext';
 
 function SafeImage({ src, alt, className, title, category }: { src: string; alt: string; className: string; title?: string; category?: string }) {
   const [hasError, setHasError] = useState(false);
@@ -36,7 +33,8 @@ function SafeImage({ src, alt, className, title, category }: { src: string; alt:
   );
 }
 
-export function StallsPage({ onAddToCart }: StallsPageProps) {
+export function StallsPage() {
+  const { addToCart } = useApp();
   const [selectedStall, setSelectedStall] = useState<any | null>(null);
   const [simpleOrderStall, setSimpleOrderStall] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -104,11 +102,11 @@ export function StallsPage({ onAddToCart }: StallsPageProps) {
   ];
 
   if (selectedStall) {
-    return <CustomOrderPage stall={selectedStall} onBack={() => setSelectedStall(null)} onAddToCart={onAddToCart} />;
+    return <CustomOrderPage stall={selectedStall} onBack={() => setSelectedStall(null)} onAddToCart={addToCart} />;
   }
 
   if (simpleOrderStall) {
-    return <SimpleOrderPage stall={simpleOrderStall} onBack={() => setSimpleOrderStall(null)} onAddToCart={onAddToCart} />;
+    return <SimpleOrderPage stall={simpleOrderStall} onBack={() => setSimpleOrderStall(null)} onAddToCart={addToCart} />;
   }
 
   const categories = ['All', 'Chaat & Street Snacks', 'Beverages & Snacks', 'Fast Food & Momos', 'Mughlai & Rolls'];
