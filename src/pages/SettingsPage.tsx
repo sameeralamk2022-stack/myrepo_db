@@ -4,8 +4,8 @@ import { useApp } from '@/context/AppContext';
 
 export function SettingsPage(): JSX.Element {
   const { profile, setProfile, logout } = useApp();
-  const [name, setName] = useState(profile.name || '');
-  const [phone, setPhone] = useState(profile.phone || '');
+  const [name, setName] = useState(profile?.name || '');
+  const [phone, setPhone] = useState(profile?.phone || '');
   const [saved, setSaved] = useState(false);
   const [generalRating, setGeneralRating] = useState(5);
   const [feedbackText, setFeedbackText] = useState('');
