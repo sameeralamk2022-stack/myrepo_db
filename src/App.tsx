@@ -58,9 +58,8 @@ function AppContent() {
 
       <main className="flex-1 flex flex-col overflow-y-auto">
         {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'stalls' && <StallsPage />}
-        {currentPage === 'custom' && <StallsPage />}
-        {currentPage === 'simple' && <StallsPage />}
+        {currentPage === 'stalls' && <StallsPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'personal' && <StallsPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'dashboard' && <DashboardPage />}
         {currentPage === 'orders' && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
         {currentPage === 'settings' && <SettingsPage />}

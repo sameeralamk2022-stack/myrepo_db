@@ -16,9 +16,10 @@ interface CustomOrderPageProps {
   };
   onBack: () => void;
   onAddToCart: (item: any, quantity: number, customDetails: string) => void;
+  onProceedToOrders?: () => void;
 }
 
-export function CustomOrderPage({ stall, onBack, onAddToCart }: CustomOrderPageProps) {
+export function CustomOrderPage({ stall, onBack, onAddToCart, onProceedToOrders }: CustomOrderPageProps) {
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [spiceLevels, setSpiceLevels] = useState<{ [key: string]: string }>({});
   const [success, setSuccess] = useState(false);
@@ -37,7 +38,11 @@ export function CustomOrderPage({ stall, onBack, onAddToCart }: CustomOrderPageP
         const item = stall.items.find((i) => i.id === id);
         if (item) {
           const spice = spiceLevels[id] || 'Medium';
-          onAddToCart({ ...item, stallName: stall.name }, qty, `Spice: ${spice}`);
+          onAddToCart(
+            { ...item, stallName: stall.name, stallLocation: stall.location },
+            qty,
+            `Spice: ${spice}`
+          );
           addedCount += qty;
         }
       }
@@ -48,6 +53,9 @@ export function CustomOrderPage({ stall, onBack, onAddToCart }: CustomOrderPageP
       setTimeout(() => {
         setSuccess(false);
         onBack();
+        if (typeof onProceedToOrders === 'function') {
+          setTimeout(() => onProceedToOrders(), 100);
+        }
       }, 1500);
     }
   };
@@ -84,7 +92,7 @@ export function CustomOrderPage({ stall, onBack, onAddToCart }: CustomOrderPageP
               <CheckCircle className="w-8 h-8 animate-bounce" />
             </div>
             <h3 className="text-xl font-black text-white">Added to Cart Successfully!</h3>
-            <p className="text-xs text-slate-400">Your customized items have been added to your cart drawer.</p>
+            <p className="text-xs text-slate-400">Redirecting you to the Orders page...</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -142,7 +150,7 @@ export function CustomOrderPage({ stall, onBack, onAddToCart }: CustomOrderPageP
                 className="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 rounded-2xl font-black text-xs flex items-center space-x-2 shadow-lg shadow-amber-500/20 cursor-pointer transition-all"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Add to Cart</span>
+                <span>Add to Cart & Go to Orders</span>
               </button>
             </div>
           </div>

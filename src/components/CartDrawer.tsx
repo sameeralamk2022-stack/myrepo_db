@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, AlertCircle, Clock, MapPin, Navigation } from 'lucide-react';
+import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, Clock, MapPin, Navigation, Store, Flag } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { QR_CODE_URL } from '@/lib/constants';
 
@@ -25,10 +25,17 @@ function getDeliveryRate() {
   return { isDayTime, ratePerKm: isDayTime ? 10 : 12 };
 }
 
+function mapsLink(addr: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+}
+
 export function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, updateQuantity, clearCart, addOrder } = useApp();
+  const [shopName, setShopName] = useState('');
+  const [pickupAddress, setPickupAddress] = useState('');
+  const [dropAddress, setDropAddress] = useState('');
+  const [landmark, setLandmark] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
-  const [address, setAddress] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isCartOpen) return null;
@@ -36,28 +43,38 @@ export function CartDrawer() {
   const onClose = () => setIsCartOpen(false);
   const cartItems = cart;
   const canOrder = isWithinOperatingHours();
-  const { isDayTime, ratePerKm } = getDeliveryRate();
+  const { isDayTime } = getDeliveryRate();
+
+  const availablePayments = isDayTime
+    ? [{ id: 'cod' as const, label: 'Cash on Delivery' }, { id: 'upi' as const, label: 'UPI QR Pay' }]
+    : [{ id: 'upi' as const, label: 'UPI QR Pay' }];
 
   const handleWhatsAppDispatch = () => {
     if (cartItems.length === 0) return;
     if (!canOrder) {
-      alert('Orders are only accepted between 10:00 AM and 11:30 PM. Please try again during operating hours.');
+      alert('Orders are only accepted between 10:00 AM and 11:30 PM.');
       return;
     }
-    if (!address.trim()) {
-      alert('Please enter your delivery address.');
-      return;
-    }
+    if (!shopName.trim()) { alert('Please enter the shop name.'); return; }
+    if (!pickupAddress.trim()) { alert('Please enter the pickup address.'); return; }
+    if (!dropAddress.trim()) { alert('Please enter the delivery (drop) address.'); return; }
 
     const orderId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
-    const itemsList = cartItems.map((i: any) => `• ${i.name} (${i.quantity}x) ${i.customDetails ? `[${i.customDetails}]` : ''}`).join('\n');
+    const itemsList = cartItems.map((i: any) =>
+      `• ${i.name} (${i.quantity}x) ${i.customDetails ? `[${i.customDetails}]` : ''}`
+    ).join('\n');
 
-    const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    const pickupMaps = mapsLink(`${shopName}, ${pickupAddress}, Meerut`);
+    const dropMaps = mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`);
 
     const whatsappMessage = encodeURIComponent(
       `🛍️ *NEW MEERUT BITES ORDER* (#${orderId})\n\n` +
-      `*Delivery Address:* ${address}\n` +
-      `*Google Maps Location:* ${mapsLink}\n` +
+      `*Shop Name:* ${shopName}\n` +
+      `*Pickup Address:* ${pickupAddress}\n` +
+      `*Pickup Maps:* ${pickupMaps}\n` +
+      `*Drop Address:* ${dropAddress}\n` +
+      (landmark.trim() ? `*Landmark:* ${landmark}\n` : '') +
+      `*Drop Maps:* ${dropMaps}\n` +
       `*Delivery Rate:* ${isDayTime ? 'Day ₹10/km' : 'Night ₹12/km'}\n` +
       `*Payment Mode:* ${paymentMethod.toUpperCase()}\n\n` +
       `*Items:*\n${itemsList}\n\n` +
@@ -69,12 +86,16 @@ export function CartDrawer() {
 
     const newOrder = {
       id: orderId,
-      stallName: cartItems[0]?.stallName || 'Meerut Bites Partner Stall',
+      shopName: shopName.trim(),
+      stallName: cartItems[0]?.stallName || shopName.trim(),
       items: cartItems.map((i: any) => `${i.name} (${i.quantity}x)`).join(', '),
       total: 0,
       status: 'Preparing in Kitchen',
       time: 'Just now',
-      address,
+      pickupAddress: pickupAddress.trim(),
+      dropAddress: dropAddress.trim(),
+      landmark: landmark.trim(),
+      paymentMethod: paymentMethod.toUpperCase(),
       deliveryRate: isDayTime ? '₹10/km (Day)' : '₹12/km (Night)',
     };
 
@@ -83,8 +104,20 @@ export function CartDrawer() {
     setTimeout(() => {
       setIsSuccess(false);
       clearCart();
+      setShopName('');
+      setPickupAddress('');
+      setDropAddress('');
+      setLandmark('');
       onClose();
     }, 2000);
+  };
+
+  const autoFillFromCart = () => {
+    if (cartItems.length > 0) {
+      const first = cartItems[0];
+      if (first.stallName && !shopName) setShopName(first.stallName);
+      if (first.stallLocation && !pickupAddress) setPickupAddress(first.stallLocation);
+    }
   };
 
   return (
@@ -124,6 +157,7 @@ export function CartDrawer() {
             </div>
           ) : (
             <>
+              {/* Cart Items */}
               <div className="flex items-center justify-between pb-2">
                 <span className="text-xs font-black uppercase text-slate-400">Selected Items ({cartItems.length})</span>
                 <button onClick={clearCart} className="text-xs text-red-400 hover:underline flex items-center space-x-1 cursor-pointer">
@@ -132,8 +166,8 @@ export function CartDrawer() {
                 </button>
               </div>
 
-              {cartItems.map((item: any) => (
-                <div key={`${item.id}-${item.customDetails}`} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+              {cartItems.map((item: any, idx: number) => (
+                <div key={`${item.id}-${item.customDetails}-${idx}`} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
                   <img src={item.image} alt={item.name} className="w-14 h-14 rounded-xl object-cover bg-slate-900" />
                   <div className="flex-1 min-w-0">
                     <span className="text-[10px] text-amber-400 font-bold uppercase">{item.stallName}</span>
@@ -149,46 +183,133 @@ export function CartDrawer() {
                 </div>
               ))}
 
-              <div className="space-y-3 pt-4 border-t border-slate-800">
-                <label className="text-xs font-black uppercase tracking-wider text-slate-300 block">Delivery Address in Meerut</label>
-                <input
-                  type="text"
-                  placeholder="Enter house no, street, landmark..."
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
-                />
-                {address.trim() && (
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
-                  >
-                    <Navigation className="w-3.5 h-3.5" />
-                    <span>Open this location in Google Maps</span>
-                  </a>
-                )}
+              {/* Shop & Location Details */}
+              <div className="space-y-4 pt-4 border-t border-slate-800">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-300">Shop & Delivery Details</span>
+                  {cartItems[0]?.stallName && (
+                    <button
+                      onClick={autoFillFromCart}
+                      className="text-[10px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                    >
+                      Auto-fill from cart
+                    </button>
+                  )}
+                </div>
+
+                {/* Shop Name */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <Store className="w-3.5 h-3.5 text-amber-400" />
+                    Shop Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Shri Gopal Chaat Bhandar"
+                    value={shopName}
+                    onChange={(e) => setShopName(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                {/* Pickup Address */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                    Pickup Address (Shop Location)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter shop address, area in Meerut..."
+                    value={pickupAddress}
+                    onChange={(e) => setPickupAddress(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
+                  />
+                  {pickupAddress.trim() && (
+                    <a
+                      href={mapsLink(`${shopName}, ${pickupAddress}, Meerut`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>Open pickup location in Google Maps</span>
+                    </a>
+                  )}
+                </div>
+
+                {/* Drop Address */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                    Delivery Address (Drop Location)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your house no, street, area..."
+                    value={dropAddress}
+                    onChange={(e) => setDropAddress(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-teal-500 outline-none"
+                  />
+                  {dropAddress.trim() && (
+                    <a
+                      href={mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>Open drop location in Google Maps</span>
+                    </a>
+                  )}
+                </div>
+
+                {/* Landmark */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <Flag className="w-3.5 h-3.5 text-amber-400" />
+                    Landmark (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Near Begum Bridge, opposite City Mall..."
+                    value={landmark}
+                    onChange={(e) => setLandmark(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
+                  />
+                </div>
               </div>
 
+              {/* Payment Method */}
               <div className="space-y-3 pt-2">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-300 block">Payment Method</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setPaymentMethod('upi')}
-                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 cursor-pointer ${paymentMethod === 'upi' ? 'bg-amber-500/10 border-amber-500 text-amber-400' : 'bg-slate-950 border-slate-800 text-slate-400'}`}
-                  >
-                    <QrCode className="w-3.5 h-3.5" />
-                    <span>UPI QR Pay</span>
-                  </button>
-                  <button
-                    onClick={() => setPaymentMethod('cod')}
-                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 cursor-pointer ${paymentMethod === 'cod' ? 'bg-amber-500/10 border-amber-500 text-amber-400' : 'bg-slate-950 border-slate-800 text-slate-400'}`}
-                  >
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    <span>Cash on Delivery</span>
-                  </button>
+                <div className="grid grid-cols-1 gap-2">
+                  {availablePayments.map((pm) => (
+                    <button
+                      key={pm.id}
+                      onClick={() => setPaymentMethod(pm.id)}
+                      className={`py-2.5 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 cursor-pointer transition-all ${
+                        paymentMethod === pm.id
+                          ? 'bg-amber-500/10 border-amber-500 text-amber-400'
+                          : 'bg-slate-950 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {pm.id === 'upi' ? <QrCode className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+                      <span>{pm.label}</span>
+                    </button>
+                  ))}
                 </div>
+
+                {!isDayTime && (
+                  <p className="text-[10px] text-amber-400/80 font-bold">
+                    Night orders (6 PM - 10 AM): Only UPI payment is available.
+                  </p>
+                )}
+                {isDayTime && (
+                  <p className="text-[10px] text-slate-500 font-bold">
+                    Day orders (10 AM - 6 PM): Both COD and UPI are available.
+                  </p>
+                )}
 
                 {paymentMethod === 'upi' && (
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-center space-y-2">
@@ -200,6 +321,7 @@ export function CartDrawer() {
                 )}
               </div>
 
+              {/* Delivery Rate */}
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
                 <div className="flex items-center gap-2 text-[11px] font-black text-amber-400 uppercase tracking-wider">
                   <MapPin className="w-3.5 h-3.5" />

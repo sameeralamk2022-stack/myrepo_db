@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Store, Star, Search, MapPin, Utensils, ArrowRight,
-  Clock, ChevronRight
+  Clock, ShoppingBag, User
 } from 'lucide-react';
 import { CustomOrderPage } from '@/pages/CustomOrderPage';
-import { SimpleOrderPage } from '@/pages/SimpleOrder';
 import { useApp } from '@/context/AppContext';
 
 function SafeImage({ src, alt, className, title, category }: { src: string; alt: string; className: string; title?: string; category?: string }) {
@@ -33,10 +32,9 @@ function SafeImage({ src, alt, className, title, category }: { src: string; alt:
   );
 }
 
-export function StallsPage() {
+export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string) => void }) {
   const { addToCart } = useApp();
   const [selectedStall, setSelectedStall] = useState<any | null>(null);
-  const [simpleOrderStall, setSimpleOrderStall] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -156,11 +154,17 @@ export function StallsPage() {
   ];
 
   if (selectedStall) {
-    return <CustomOrderPage stall={selectedStall} onBack={() => setSelectedStall(null)} onAddToCart={addToCart} />;
-  }
-
-  if (simpleOrderStall) {
-    return <SimpleOrderPage stall={simpleOrderStall} onBack={() => setSimpleOrderStall(null)} onAddToCart={addToCart} />;
+    return (
+      <CustomOrderPage
+        stall={selectedStall}
+        onBack={() => setSelectedStall(null)}
+        onAddToCart={addToCart}
+        onProceedToOrders={() => {
+          setSelectedStall(null);
+          if (typeof setCurrentPage === 'function') setCurrentPage('orders');
+        }}
+      />
+    );
   }
 
   const categories = ['All', 'Chaat & Street Snacks', 'Beverages & Snacks', 'Fast Food & Momos', 'Mughlai & Rolls', 'North Indian Thali', 'Sweets & Desserts'];
@@ -186,10 +190,33 @@ export function StallsPage() {
             Discover Authentic Street Food Stalls
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Select any stall below for <span className="text-amber-400 font-bold">Custom Orders</span> (spice levels, portions) or use <span className="text-amber-400 font-bold">Simple Orders</span> for direct quick checkout. Prices are decided by the delivery captain. Operating strictly between 10:00 AM and 11:30 PM.
+            Tap any stall to select items and customize your order. Prices are decided by the delivery captain. Operating strictly between 10:00 AM and 11:30 PM.
           </p>
         </div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-teal-500/10 to-amber-500/10 border border-teal-500/30 rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400">
+            <User className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-sm font-black text-white">Personal Order</h3>
+            <p className="text-xs text-slate-400">Order from a shop not listed above? Enter your own shop and delivery details.</p>
+          </div>
+        </div>
+        <button
+          onClick={() => { if (typeof setCurrentPage === 'function') setCurrentPage('personal'); }}
+          className="px-5 py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-2xl font-black text-xs flex items-center gap-2 shadow-lg shadow-teal-500/20 cursor-pointer transition-all whitespace-nowrap"
+        >
+          <ShoppingBag className="w-4 h-4" />
+          <span>Create Personal Order</span>
+        </button>
+      </motion.div>
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="relative flex-1">
@@ -260,23 +287,13 @@ export function StallsPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-800">
-                <button
-                  onClick={() => setSelectedStall(stall)}
-                  className="py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
-                >
-                  <span>Custom Order</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => setSimpleOrderStall(stall)}
-                  className="py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
-                >
-                  <span>Simple Order</span>
-                  <ChevronRight className="w-4 h-4 text-amber-400" />
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedStall(stall)}
+                className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+              >
+                <span>Order Now</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </motion.div>
         ))}

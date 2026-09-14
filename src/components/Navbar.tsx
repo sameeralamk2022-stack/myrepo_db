@@ -14,8 +14,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'stalls', label: 'Stalls', icon: Store },
-    { id: 'custom', label: 'Custom Order', icon: Sparkles, highlight: true },
-    { id: 'simple', label: 'Simple Order', icon: ShoppingBag },
+    { id: 'personal', label: 'Personal Order', icon: Sparkles, highlight: true },
     { id: 'orders', label: 'Orders', icon: Package },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'settings', label: 'Settings', icon: Settings },

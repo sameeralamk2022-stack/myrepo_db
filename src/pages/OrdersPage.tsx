@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, Package, MapPin, Navigation } from 'lucide-react';
+import { Clock, CheckCircle2, Package, MapPin, Navigation, Store, Flag, CreditCard } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 function getISTMinutes() {
@@ -19,13 +19,17 @@ function getDeliveryRate() {
   return { isDayTime, ratePerKm: isDayTime ? 10 : 12 };
 }
 
+function mapsLink(addr: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+}
+
 interface OrdersPageProps {
   onNavigateStalls?: () => void;
 }
 
 export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
   const { orders } = useApp();
-  const { isDayTime, ratePerKm } = getDeliveryRate();
+  const { isDayTime } = getDeliveryRate();
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8 bg-slate-950 min-h-screen text-white">
@@ -49,7 +53,9 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
             <p className={`text-lg font-black ${!isDayTime ? 'text-amber-400' : 'text-slate-600'}`}>₹12/km</p>
           </div>
         </div>
-        <p className="text-[10px] text-slate-500 font-bold">Currently active: {isDayTime ? 'Day Rate ₹10/km' : 'Night Rate ₹12/km'} - Final price decided by Captain DB.</p>
+        <p className="text-[10px] text-slate-500 font-bold">
+          Currently active: {isDayTime ? 'Day Rate ₹10/km' : 'Night Rate ₹12/km'} - Final price decided by Captain DB.
+        </p>
       </div>
 
       {orders.length === 0 ? (
@@ -64,7 +70,7 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
+          {orders.map((order: any) => (
             <div key={order.id} className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
@@ -74,24 +80,84 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
                   <Clock className="w-3.5 h-3.5 mr-1 text-amber-400" /> {order.time}
                 </span>
               </div>
+
+              {/* Shop Name */}
+              {order.shopName && (
+                <div className="flex items-center gap-2 text-xs">
+                  <Store className="w-4 h-4 text-amber-400" />
+                  <span className="font-black text-white">{order.shopName}</span>
+                </div>
+              )}
+
+              {/* Items */}
               <div className="space-y-1">
                 <h3 className="text-lg font-black text-white">{order.stallName}</h3>
                 <p className="text-xs text-slate-300">{order.items}</p>
-                {order.address && (
+              </div>
+
+              {/* Pickup Address with Maps link */}
+              {order.pickupAddress && (
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-[10px] font-black text-amber-400 uppercase tracking-wider">
+                    <MapPin className="w-3 h-3" />
+                    <span>Pickup Location</span>
+                  </div>
+                  <p className="text-xs text-slate-300 font-bold">{order.pickupAddress}</p>
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.address)}`}
+                    href={mapsLink(`${order.shopName}, ${order.pickupAddress}, Meerut`)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer mt-1"
+                    className="inline-flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
                   >
                     <Navigation className="w-3 h-3" />
-                    <span>{order.address} - Open in Google Maps</span>
+                    <span>Open pickup in Google Maps</span>
                   </a>
+                </div>
+              )}
+
+              {/* Drop Address with Maps link */}
+              {order.dropAddress && (
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-[10px] font-black text-teal-400 uppercase tracking-wider">
+                    <MapPin className="w-3 h-3" />
+                    <span>Drop Location</span>
+                  </div>
+                  <p className="text-xs text-slate-300 font-bold">{order.dropAddress}</p>
+                  {order.landmark && (
+                    <p className="text-[11px] text-slate-400 flex items-center gap-1">
+                      <Flag className="w-3 h-3 text-amber-400" />
+                      <span>Landmark: {order.landmark}</span>
+                    </p>
+                  )}
+                  <a
+                    href={mapsLink(`${order.dropAddress}, ${order.landmark ? order.landmark + ', ' : ''}Meerut`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                  >
+                    <Navigation className="w-3 h-3" />
+                    <span>Open drop in Google Maps</span>
+                  </a>
+                </div>
+              )}
+
+              {/* Payment & Delivery Rate */}
+              <div className="flex flex-wrap gap-3">
+                {order.paymentMethod && (
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-400/80">
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>Payment: {order.paymentMethod}</span>
+                  </div>
                 )}
                 {order.deliveryRate && (
-                  <p className="text-[11px] text-amber-400/80 font-bold mt-1">Delivery Rate: {order.deliveryRate}</p>
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-400/80">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>Rate: {order.deliveryRate}</span>
+                  </div>
                 )}
               </div>
+
+              {/* Status */}
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
                 <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold">
                   <CheckCircle2 className="w-4 h-4" />

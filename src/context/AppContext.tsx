@@ -8,7 +8,7 @@ interface Profile {
 
 interface AppContextType {
   cart: any[];
-  addToCart: (item: any) => void;
+  addToCart: (item: any, quantity?: number, customDetails?: string) => void;
   removeFromCart: (id: string | number) => void;
   updateQuantity: (id: string | number, quantity: number) => void;
   clearCart: () => void;
@@ -75,17 +75,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     else root.classList.remove('dark');
   }, [darkMode]);
 
-  const addToCart = (item: any) => {
+  const addToCart = (item: any, quantity?: number, customDetails?: string) => {
     setCart(prev => {
       const existing = prev.find(i => (i.id && i.id === item.id) || (i.cartKey && i.cartKey === item.cartKey));
       if (existing) {
         return prev.map(i =>
           ((i.id && i.id === item.id) || (i.cartKey && i.cartKey === item.cartKey))
-            ? { ...i, quantity: (i.quantity || 1) + (item.quantity || 1) }
+            ? { ...i, quantity: (i.quantity || 1) + (quantity || 1) }
             : i
         );
       }
-      return [...prev, { ...item, quantity: item.quantity || 1 }];
+      return [...prev, { ...item, quantity: quantity || 1, customDetails: customDetails || '' }];
     });
     setIsCartOpen(true);
   };
