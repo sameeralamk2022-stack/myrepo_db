@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Settings, Star, AlertTriangle, Send, Code, Phone, MessageCircle, User, Save, CheckCircle, LogOut } from 'lucide-react';
+import { Settings, Star, AlertTriangle, Send, Code, Phone, MessageCircle, User, Save, CheckCircle, LogOut, Sun, Moon, Cpu, Rocket } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { DEVELOPER } from '@/lib/constants';
 
 export function SettingsPage(): JSX.Element {
-  const { profile, setProfile, logout } = useApp();
+  const { profile, setProfile, logout, darkMode, setDarkMode } = useApp();
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
   const [saved, setSaved] = useState(false);
@@ -44,14 +45,41 @@ export function SettingsPage(): JSX.Element {
     window.open(`https://wa.me/${captainNumber}?text=${message}`, '_blank');
   };
 
+  const socialButtons = [
+    { name: 'Instagram', color: 'from-pink-500 to-purple-500', emoji: 'IG' },
+    { name: 'Facebook', color: 'from-blue-500 to-blue-600', emoji: 'FB' },
+    { name: 'Twitter / X', color: 'from-slate-700 to-slate-900', emoji: 'X' },
+    { name: 'YouTube', color: 'from-red-500 to-red-600', emoji: 'YT' },
+  ];
+
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-6 pb-20">
+    <div className="max-w-2xl mx-auto p-4 space-y-6 pb-20 page-transition">
       <div className="border-b border-slate-800 pb-4">
         <h1 className="text-xl font-black text-white flex items-center gap-2">
           <Settings className="w-6 h-6 text-amber-400" />
           <span>App Settings & Operational Rules</span>
         </h1>
         <p className="text-xs text-slate-400">Configure your profile, delivery rules, operating hours, and app feedback.</p>
+      </div>
+
+      {/* Theme Toggle Section */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+        <h3 className="text-xs font-black text-amber-400 uppercase tracking-widest">Appearance</h3>
+        <div className="flex items-center justify-between p-3 bg-slate-950 border border-slate-800 rounded-xl">
+          <div className="flex items-center gap-2">
+            {darkMode ? <Moon className="w-4 h-4 text-amber-400" /> : <Sun className="w-4 h-4 text-amber-400" />}
+            <div>
+              <p className="text-xs font-black text-white">{darkMode ? 'Dark Mode' : 'Light Mode'}</p>
+              <p className="text-[10px] text-slate-400">Toggle between dark and light theme</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${darkMode ? 'bg-amber-500' : 'bg-slate-700'}`}
+          >
+            <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-300 ${darkMode ? 'translate-x-6' : 'translate-x-0.5'}`} />
+          </button>
+        </div>
       </div>
 
       {/* Profile Editing Section */}
@@ -150,14 +178,57 @@ export function SettingsPage(): JSX.Element {
         </h3>
         <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 flex items-center justify-center font-black text-slate-950 text-sm shadow-lg">
-              NA
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 flex items-center justify-center font-black text-slate-950 text-sm shadow-lg">
+              <div className="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center text-amber-400">
+                NA
+              </div>
             </div>
             <div>
-              <h4 className="text-xs font-black text-white">Nauman Alam Khan</h4>
-              <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wide">AI NANOTECH OPERATIONS AND MACHINE LEARNING RESEARCHER</p>
+              <h4 className="text-xs font-black text-white">{DEVELOPER}</h4>
+              <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wide">AI Nanotech Operations & ML Researcher</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20">
+                  <Cpu className="w-2.5 h-2.5" />
+                  <span>AI/ML</span>
+                </span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                  <Rocket className="w-2.5 h-2.5" />
+                  <span>Full Stack</span>
+                </span>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Social Media - Coming Soon */}
+        <div className="space-y-2">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Social Media</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {socialButtons.map((social) => (
+              <div
+                key={social.name}
+                className="relative p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500/40 transition-all cursor-default"
+              >
+                <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${social.color} flex items-center justify-center text-white font-black text-[10px] mb-1.5`}>
+                  {social.emoji}
+                </div>
+                <p className="text-[10px] font-bold text-slate-300">{social.name}</p>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-[8px] font-bold text-amber-400 uppercase tracking-wider">Coming Soon</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tech stack */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {['React 18', 'TypeScript', 'Vite', 'Tailwind CSS', 'Framer Motion', 'Supabase', 'PWA'].map((tech) => (
+            <span key={tech} className="text-[9px] font-bold text-slate-400 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-full">
+              {tech}
+            </span>
+          ))}
         </div>
       </div>
 

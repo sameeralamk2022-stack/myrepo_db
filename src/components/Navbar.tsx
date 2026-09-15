@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, LogOut, User as UserIcon } from 'lucide-react';
+import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 interface NavbarProps {
@@ -8,7 +8,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
-  const { cart = [], setIsCartOpen = () => {}, profile, logout } = useApp() as any;
+  const { cart = [], setIsCartOpen = () => {}, profile, logout, darkMode, setDarkMode } = useApp() as any;
   const totalCartItems = cart.reduce((acc: number, item: any) => acc + (item.quantity || 1), 0);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -28,7 +28,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-xl">
+    <header className="sticky top-0 z-50 bg-slate-950/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-xl">
       <div className="max-w-7xl mx-auto px-3 py-2.5 space-y-2">
         <div className="flex items-center justify-between">
           <div
@@ -52,6 +52,19 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
                 <span className="text-[10px] font-bold text-slate-300 max-w-[80px] truncate">{profile.name}</span>
               </div>
             )}
+
+            {/* Dark/Light theme toggle */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 rounded-xl transition-all cursor-pointer group/toggle"
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {darkMode ? (
+                <Sun className="w-4 h-4 text-amber-400 group-hover/toggle:rotate-90 transition-transform duration-300" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 group-hover/toggle:-rotate-12 transition-transform duration-300" />
+              )}
+            </button>
 
             <button
               onClick={() => setIsCartOpen(true)}
@@ -103,7 +116,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
       {/* Logout confirmation modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-xs w-full space-y-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-xs w-full space-y-4 shadow-2xl spring-bounce" onClick={(e) => e.stopPropagation()}>
             <div className="w-12 h-12 rounded-full bg-rose-500/20 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
               <LogOut className="w-6 h-6" />
             </div>
