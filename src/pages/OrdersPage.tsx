@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, Package, MapPin, Navigation, Store, Flag, CreditCard } from 'lucide-react';
+import { Clock, CheckCircle2, Package, MapPin, Navigation, Store, Flag, CreditCard, User, Phone } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 function getISTMinutes() {
@@ -81,6 +81,30 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
                 </span>
               </div>
 
+              {/* Customer Details */}
+              {(order.customerName || order.customerPhone) && (
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1">
+                  {order.customerName && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-bold">
+                      <User className="w-3 h-3 text-amber-400" />
+                      <span>{order.customerName}</span>
+                    </div>
+                  )}
+                  {order.customerPhone && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-bold">
+                      <Phone className="w-3 h-3 text-amber-400" />
+                      <span>{order.customerPhone}</span>
+                    </div>
+                  )}
+                  {order.zone && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-bold">
+                      <MapPin className="w-3 h-3 text-teal-400" />
+                      <span>Zone: {order.zone}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Shop Name */}
               {order.shopName && (
                 <div className="flex items-center gap-2 text-xs">
@@ -130,7 +154,7 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
                     </p>
                   )}
                   <a
-                    href={mapsLink(`${order.dropAddress}, ${order.landmark ? order.landmark + ', ' : ''}Meerut`)}
+                    href={mapsLink(`${order.dropAddress}, ${order.landmark ? order.landmark + ', ' : ''}${order.zone ? order.zone + ', ' : ''}Meerut`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"

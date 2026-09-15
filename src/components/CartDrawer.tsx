@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, Clock, MapPin, Navigation, Store, Flag } from 'lucide-react';
+import { X, ShoppingBag, Trash2, Plus, Minus, Send, QrCode, Clock, MapPin, Navigation, Store, Flag, CheckCircle, Crosshair, Loader2 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { QR_CODE_URL } from '@/lib/constants';
+import { QR_CODE_URL, WHATSAPP_NUMBER, SECURITY_DISCLAIMER } from '@/lib/constants';
 
 function getISTMinutes() {
   try {
@@ -30,13 +30,16 @@ function mapsLink(addr: string) {
 }
 
 export function CartDrawer() {
-  const { cart, isCartOpen, setIsCartOpen, updateQuantity, clearCart, addOrder } = useApp();
+  const { cart, isCartOpen, setIsCartOpen, updateQuantity, clearCart, addOrder, profile } = useApp();
   const [shopName, setShopName] = useState('');
   const [pickupAddress, setPickupAddress] = useState('');
   const [dropAddress, setDropAddress] = useState('');
   const [landmark, setLandmark] = useState('');
+  const [zone, setZone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [bookedOrderId, setBookedOrderId] = useState('');
+  const [detecting, setDetecting] = useState(false);
 
   if (!isCartOpen) return null;
 
@@ -49,6 +52,27 @@ export function CartDrawer() {
     ? [{ id: 'cod' as const, label: 'Cash on Delivery' }, { id: 'upi' as const, label: 'UPI QR Pay' }]
     : [{ id: 'upi' as const, label: 'UPI QR Pay' }];
 
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported on your device.');
+      return;
+    }
+    setDetecting(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, latitude: lat, longitude: lng } = pos.coords;
+        const coords = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        setDropAddress((prev) => prev ? `${prev} [GPS: ${coords}]` : `GPS: ${coords}`);
+        setDetecting(false);
+      },
+      () => {
+        alert('Could not detect your location. Please enter the address manually.');
+        setDetecting(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   const handleWhatsAppDispatch = () => {
     if (cartItems.length === 0) return;
     if (!canOrder) {
@@ -59,30 +83,41 @@ export function CartDrawer() {
     if (!pickupAddress.trim()) { alert('Please enter the pickup address.'); return; }
     if (!dropAddress.trim()) { alert('Please enter the delivery (drop) address.'); return; }
 
-    const orderId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderId = `MB-${Math.floor(100000 + Math.random() * 900000)}`;
     const itemsList = cartItems.map((i: any) =>
-      `• ${i.name} (${i.quantity}x) ${i.customDetails ? `[${i.customDetails}]` : ''}`
+      `• ${i.name} (${i.quantity}x)${i.customDetails ? ` [${i.customDetails}]` : ''}`
     ).join('\n');
 
     const pickupMaps = mapsLink(`${shopName}, ${pickupAddress}, Meerut`);
-    const dropMaps = mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`);
+    const dropMaps = mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}${zone ? zone + ', ' : ''}Meerut`);
+
+    const paymentLabel = paymentMethod === 'cod' ? 'COD' : 'UPI';
 
     const whatsappMessage = encodeURIComponent(
-      `🛍️ *NEW MEERUT BITES ORDER* (#${orderId})\n\n` +
-      `*Shop Name:* ${shopName}\n` +
-      `*Pickup Address:* ${pickupAddress}\n` +
-      `*Pickup Maps:* ${pickupMaps}\n` +
-      `*Drop Address:* ${dropAddress}\n` +
-      (landmark.trim() ? `*Landmark:* ${landmark}\n` : '') +
-      `*Drop Maps:* ${dropMaps}\n` +
-      `*Delivery Rate:* ${isDayTime ? 'Day ₹10/km' : 'Night ₹12/km'}\n` +
-      `*Payment Mode:* ${paymentMethod.toUpperCase()}\n\n` +
-      `*Items:*\n${itemsList}\n\n` +
-      `*Note:* Item prices to be decided by captain.\n\n` +
-      `🕒 *Status:* Dispatched to Kitchen`
+      `*NEW MEERUT BITES ORDER*\n` +
+      `----------------------------------\n` +
+      `🆔 Order ID: #${orderId}\n` +
+      `👤 Customer: ${profile?.name || 'Guest'}\n` +
+      `📞 Phone: ${profile?.phone || 'Not provided'}\n` +
+      `📍 Zone: ${zone || 'Meerut'}\n` +
+      `----------------------------------\n` +
+      `🛒 *Items:*\n${itemsList}\n` +
+      `💳 *Payment:* ${paymentLabel}\n` +
+      `----------------------------------\n` +
+      `🏪 Shop: ${shopName}\n` +
+      `📍 Pickup: ${pickupAddress}\n` +
+      `🗺️ Pickup Maps: ${pickupMaps}\n` +
+      `📍 Drop: ${dropAddress}\n` +
+      (landmark.trim() ? `🚩 Landmark: ${landmark}\n` : '') +
+      `🗺️ Drop Maps: ${dropMaps}\n` +
+      `----------------------------------\n` +
+      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11:30PM)\n` +
+      `⚠️ *Policy:* No illegal items.\n` +
+      `----------------------------------\n` +
+      `Please confirm & dispatch!`
     );
 
-    window.open(`https://wa.me/?text=${whatsappMessage}`, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`, '_blank');
 
     const newOrder = {
       id: orderId,
@@ -95,11 +130,15 @@ export function CartDrawer() {
       pickupAddress: pickupAddress.trim(),
       dropAddress: dropAddress.trim(),
       landmark: landmark.trim(),
-      paymentMethod: paymentMethod.toUpperCase(),
+      zone: zone.trim(),
+      paymentMethod: paymentLabel,
       deliveryRate: isDayTime ? '₹10/km (Day)' : '₹12/km (Night)',
+      customerName: profile?.name || 'Guest',
+      customerPhone: profile?.phone || '',
     };
 
     addOrder(newOrder);
+    setBookedOrderId(orderId);
     setIsSuccess(true);
     setTimeout(() => {
       setIsSuccess(false);
@@ -108,8 +147,10 @@ export function CartDrawer() {
       setPickupAddress('');
       setDropAddress('');
       setLandmark('');
+      setZone('');
+      setBookedOrderId('');
       onClose();
-    }, 2000);
+    }, 3000);
   };
 
   const autoFillFromCart = () => {
@@ -145,10 +186,13 @@ export function CartDrawer() {
           {isSuccess ? (
             <div className="py-20 text-center space-y-4">
               <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-400">
-                <Send className="w-8 h-8 animate-bounce" />
+                <CheckCircle className="w-8 h-8 animate-bounce" />
               </div>
-              <h3 className="text-xl font-black text-white">Dispatched to WhatsApp!</h3>
-              <p className="text-xs text-slate-400">Your order has been sent successfully.</p>
+              <h3 className="text-xl font-black text-white">Order Booked Successfully!</h3>
+              <div className="inline-block px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                <span className="text-xs font-black text-amber-400">Order ID: #{bookedOrderId}</span>
+              </div>
+              <p className="text-xs text-slate-400">Sent to Captain D via WhatsApp. Redirecting...</p>
             </div>
           ) : cartItems.length === 0 ? (
             <div className="py-24 text-center space-y-3">
@@ -238,12 +282,22 @@ export function CartDrawer() {
                   )}
                 </div>
 
-                {/* Drop Address */}
+                {/* Drop Address with Detect Location */}
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-teal-400" />
-                    Delivery Address (Drop Location)
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                      Delivery Address (Drop Location)
+                    </label>
+                    <button
+                      onClick={detectLocation}
+                      disabled={detecting}
+                      className="flex items-center gap-1 text-[10px] font-bold text-teal-400 hover:text-teal-300 cursor-pointer disabled:opacity-50"
+                    >
+                      {detecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Crosshair className="w-3 h-3" />}
+                      <span>{detecting ? 'Detecting...' : 'Detect My Location'}</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="Enter your house no, street, area..."
@@ -253,7 +307,7 @@ export function CartDrawer() {
                   />
                   {dropAddress.trim() && (
                     <a
-                      href={mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`)}
+                      href={mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}${zone ? zone + ', ' : ''}Meerut`)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
@@ -276,6 +330,21 @@ export function CartDrawer() {
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                {/* Zone */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                    Zone / Area
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Meerut Cantt, Civil Lines, Abu Lane..."
+                    value={zone}
+                    onChange={(e) => setZone(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-teal-500 outline-none"
                   />
                 </div>
               </div>
@@ -330,7 +399,7 @@ export function CartDrawer() {
                 <p className="text-xs text-slate-300 font-bold">
                   {isDayTime ? 'Day Rate (10 AM - 6 PM): ₹10/km' : 'Night Rate (6 PM - 10 AM): ₹12/km'}
                 </p>
-                <p className="text-[10px] text-slate-500">Final delivery charge calculated by captain based on distance.</p>
+                <p className="text-[10px] text-slate-500">{SECURITY_DISCLAIMER}</p>
               </div>
             </>
           )}

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
   ArrowLeft, Plus, Trash2, Send, CheckCircle, MapPin, Navigation,
-  Store, Flag, QrCode, Clock, ShoppingBag, Utensils
+  Store, Flag, QrCode, Clock, ShoppingBag, Utensils, Crosshair, Loader2
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { QR_CODE_URL } from '@/lib/constants';
+import { QR_CODE_URL, WHATSAPP_NUMBER, SECURITY_DISCLAIMER } from '@/lib/constants';
 
 function getISTMinutes() {
   try {
@@ -38,14 +38,17 @@ interface PersonalOrderPageProps {
 }
 
 export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPageProps) {
-  const { addOrder } = useApp();
+  const { addOrder, profile } = useApp();
   const [items, setItems] = useState([{ id: '1', name: '', quantity: 1, notes: '' }]);
   const [shopName, setShopName] = useState('');
   const [pickupAddress, setPickupAddress] = useState('');
   const [dropAddress, setDropAddress] = useState('');
   const [landmark, setLandmark] = useState('');
+  const [zone, setZone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'cod'>('upi');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [bookedOrderId, setBookedOrderId] = useState('');
+  const [detecting, setDetecting] = useState(false);
 
   const canOrder = isWithinOperatingHours();
   const { isDayTime } = getDeliveryRate();
@@ -66,6 +69,27 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
     setItems(prev => prev.map(i => i.id === id ? { ...i, [field]: value } : i));
   };
 
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported on your device.');
+      return;
+    }
+    setDetecting(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        const coords = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        setDropAddress((prev) => prev ? `${prev} [GPS: ${coords}]` : `GPS: ${coords}`);
+        setDetecting(false);
+      },
+      () => {
+        alert('Could not detect your location. Please enter the address manually.');
+        setDetecting(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   const handleSubmit = () => {
     if (!canOrder) {
       alert('Orders are only accepted between 10:00 AM and 11:30 PM.');
@@ -78,30 +102,41 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
     const validItems = items.filter(i => i.name.trim());
     if (validItems.length === 0) { alert('Please add at least one item.'); return; }
 
-    const orderId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderId = `MB-${Math.floor(100000 + Math.random() * 900000)}`;
     const itemsList = validItems.map(i =>
       `• ${i.name} (${i.quantity}x)${i.notes ? ` [${i.notes}]` : ''}`
     ).join('\n');
 
     const pickupMaps = mapsLink(`${shopName}, ${pickupAddress}, Meerut`);
-    const dropMaps = mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`);
+    const dropMaps = mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}${zone ? zone + ', ' : ''}Meerut`);
+
+    const paymentLabel = paymentMethod === 'cod' ? 'COD' : 'UPI';
 
     const whatsappMessage = encodeURIComponent(
-      `🛍️ *NEW PERSONAL ORDER* (#${orderId})\n\n` +
-      `*Shop Name:* ${shopName}\n` +
-      `*Pickup Address:* ${pickupAddress}\n` +
-      `*Pickup Maps:* ${pickupMaps}\n` +
-      `*Drop Address:* ${dropAddress}\n` +
-      (landmark.trim() ? `*Landmark:* ${landmark}\n` : '') +
-      `*Drop Maps:* ${dropMaps}\n` +
-      `*Delivery Rate:* ${isDayTime ? 'Day ₹10/km' : 'Night ₹12/km'}\n` +
-      `*Payment Mode:* ${paymentMethod.toUpperCase()}\n\n` +
-      `*Items:*\n${itemsList}\n\n` +
-      `*Note:* Item prices to be decided by captain.\n\n` +
-      `🕒 *Status:* Dispatched to Kitchen`
+      `*NEW MEERUT BITES ORDER*\n` +
+      `----------------------------------\n` +
+      `🆔 Order ID: #${orderId}\n` +
+      `👤 Customer: ${profile?.name || 'Guest'}\n` +
+      `📞 Phone: ${profile?.phone || 'Not provided'}\n` +
+      `📍 Zone: ${zone || 'Meerut'}\n` +
+      `----------------------------------\n` +
+      `🛒 *Items:*\n${itemsList}\n` +
+      `💳 *Payment:* ${paymentLabel}\n` +
+      `----------------------------------\n` +
+      `🏪 Shop: ${shopName}\n` +
+      `📍 Pickup: ${pickupAddress}\n` +
+      `🗺️ Pickup Maps: ${pickupMaps}\n` +
+      `📍 Drop: ${dropAddress}\n` +
+      (landmark.trim() ? `🚩 Landmark: ${landmark}\n` : '') +
+      `🗺️ Drop Maps: ${dropMaps}\n` +
+      `----------------------------------\n` +
+      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11:30PM)\n` +
+      `⚠️ *Policy:* No illegal items.\n` +
+      `----------------------------------\n` +
+      `Please confirm & dispatch!`
     );
 
-    window.open(`https://wa.me/?text=${whatsappMessage}`, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`, '_blank');
 
     const newOrder = {
       id: orderId,
@@ -114,17 +149,22 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
       pickupAddress: pickupAddress.trim(),
       dropAddress: dropAddress.trim(),
       landmark: landmark.trim(),
-      paymentMethod: paymentMethod.toUpperCase(),
+      zone: zone.trim(),
+      paymentMethod: paymentLabel,
       deliveryRate: isDayTime ? '₹10/km (Day)' : '₹12/km (Night)',
       isPersonalOrder: true,
+      customerName: profile?.name || 'Guest',
+      customerPhone: profile?.phone || '',
     };
 
     addOrder(newOrder);
+    setBookedOrderId(orderId);
     setIsSuccess(true);
     setTimeout(() => {
       setIsSuccess(false);
+      setBookedOrderId('');
       onProceedToOrders();
-    }, 2000);
+    }, 3000);
   };
 
   return (
@@ -153,8 +193,11 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
             <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-400">
               <CheckCircle className="w-8 h-8 animate-bounce" />
             </div>
-            <h3 className="text-xl font-black text-white">Order Dispatched!</h3>
-            <p className="text-xs text-slate-400">Redirecting to Orders page...</p>
+            <h3 className="text-xl font-black text-white">Order Booked Successfully!</h3>
+            <div className="inline-block px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+              <span className="text-xs font-black text-amber-400">Order ID: #{bookedOrderId}</span>
+            </div>
+            <p className="text-xs text-slate-400">Sent to Captain D via WhatsApp. Redirecting to Orders...</p>
           </div>
         ) : (
           <>
@@ -269,10 +312,20 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-teal-400" />
-                  Delivery Address (Drop Location)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                    Delivery Address (Drop Location)
+                  </label>
+                  <button
+                    onClick={detectLocation}
+                    disabled={detecting}
+                    className="flex items-center gap-1 text-[10px] font-bold text-teal-400 hover:text-teal-300 cursor-pointer disabled:opacity-50"
+                  >
+                    {detecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Crosshair className="w-3 h-3" />}
+                    <span>{detecting ? 'Detecting...' : 'Detect My Location'}</span>
+                  </button>
+                </div>
                 <input
                   type="text"
                   placeholder="Enter your house no, street, area..."
@@ -282,7 +335,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
                 />
                 {dropAddress.trim() && (
                   <a
-                    href={mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}Meerut`)}
+                    href={mapsLink(`${dropAddress}, ${landmark ? landmark + ', ' : ''}${zone ? zone + ', ' : ''}Meerut`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
@@ -304,6 +357,20 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-amber-500 outline-none"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                  Zone / Area
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Meerut Cantt, Civil Lines, Abu Lane..."
+                  value={zone}
+                  onChange={(e) => setZone(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:border-teal-500 outline-none"
                 />
               </div>
             </div>
@@ -349,7 +416,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
               )}
             </div>
 
-            {/* Delivery Rate */}
+            {/* Delivery Rate & Policy */}
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
               <div className="flex items-center gap-2 text-[11px] font-black text-teal-400 uppercase tracking-wider">
                 <MapPin className="w-3.5 h-3.5" />
@@ -358,7 +425,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
               <p className="text-xs text-slate-300 font-bold">
                 {isDayTime ? 'Day Rate (10 AM - 6 PM): ₹10/km' : 'Night Rate (6 PM - 10 AM): ₹12/km'}
               </p>
-              <p className="text-[10px] text-slate-500">Final delivery charge calculated by captain based on distance.</p>
+              <p className="text-[10px] text-slate-500">{SECURITY_DISCLAIMER}</p>
             </div>
 
             {/* Submit */}
