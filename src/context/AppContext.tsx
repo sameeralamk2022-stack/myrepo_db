@@ -20,6 +20,7 @@ interface AppContextType {
   setIsCartOpen: (open: boolean) => void;
   profile: Profile;
   setProfile: (profile: Profile | ((prev: Profile) => Profile)) => void;
+  logout: () => void;
   darkMode: boolean;
   setDarkMode: (mode: boolean) => void;
 }
@@ -104,12 +105,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const clearOrders = () => setOrders([]);
   const deleteOrder = (id: string) => setOrders(prev => prev.filter(o => o.id !== id));
 
+  const logout = () => {
+    setProfile({ name: '', phone: '' });
+    setCart([]);
+    try {
+      localStorage.removeItem('mb_profile');
+      localStorage.removeItem('mb_cart');
+    } catch {}
+  };
+
   return (
     <AppContext.Provider value={{
       cart, addToCart, removeFromCart, updateQuantity, clearCart,
       orders, addOrder, clearOrders, deleteOrder,
       isCartOpen, setIsCartOpen,
-      profile, setProfile,
+      profile, setProfile, logout,
       darkMode, setDarkMode,
     }}>
       {children}

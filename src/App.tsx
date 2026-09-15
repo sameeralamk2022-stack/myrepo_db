@@ -51,26 +51,32 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState<string>(profile?.name ? 'home' : 'login');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cod' | 'upi'>('upi');
 
+  const isLoggedIn = !!(profile?.name && profile?.phone);
+
+  if (currentPage === 'login' && isLoggedIn) {
+    setCurrentPage('home');
+  }
+
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
-      {currentPage !== 'login' && (
+      {currentPage !== 'login' && isLoggedIn && (
         <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       )}
 
       <main className="flex-1 flex flex-col overflow-y-auto">
-        {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'stalls' && <StallsPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'personal' && (
+        {currentPage === 'home' && isLoggedIn && <HomePage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'stalls' && isLoggedIn && <StallsPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'personal' && isLoggedIn && (
           <PersonalOrderPage
             onBack={() => setCurrentPage('stalls')}
             onProceedToOrders={() => setCurrentPage('orders')}
           />
         )}
-        {currentPage === 'dashboard' && <DashboardPage />}
-        {currentPage === 'orders' && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
-        {currentPage === 'settings' && <SettingsPage />}
+        {currentPage === 'dashboard' && isLoggedIn && <DashboardPage />}
+        {currentPage === 'orders' && isLoggedIn && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
+        {currentPage === 'settings' && isLoggedIn && <SettingsPage />}
         {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'payment' && (
+        {currentPage === 'payment' && isLoggedIn && (
           <div className="max-w-xl mx-auto p-4 py-8">
             <PaymentCard
               selectedMethod={selectedPaymentMethod}
@@ -78,9 +84,10 @@ function AppContent() {
             />
           </div>
         )}
+        {!isLoggedIn && <LoginPage setCurrentPage={setCurrentPage} />}
       </main>
 
-      {currentPage !== 'login' && (
+      {currentPage !== 'login' && isLoggedIn && (
         <>
           <CartDrawer />
           <WhatsAppChatWidget />
