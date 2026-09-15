@@ -26,7 +26,7 @@ import { useApp } from '@/context/AppContext';
 import { DEVELOPER } from '@/lib/constants';
 
 interface HomePageProps {
-  setCurrentPage: (page: 'home' | 'stalls' | 'dashboard' | 'orders' | 'custom' | 'settings' | 'simple' | 'personal') => void;
+  setCurrentPage: (page: 'home' | 'stalls' | 'dashboard' | 'orders' | 'custom' | 'settings' | 'simple' | 'personal' | 'disclaimer') => void;
 }
 
 export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
@@ -62,6 +62,7 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
     { id: 'orders', title: 'Track Active Orders', desc: 'View real-time delivery status, order history & live updates', icon: Package, accent: 'emerald' },
     { id: 'dashboard', title: 'Vendor Dashboard', desc: 'Manage incoming orders, update stall menus & monitor sales', icon: LayoutDashboard, accent: 'blue' },
     { id: 'settings', title: 'App Settings', desc: 'Configure profile, saved locations & notification preferences', icon: SettingsIcon, accent: 'slate' },
+    { id: 'disclaimer', title: 'Hygiene & Safety', desc: 'Learn about our 6-step hygiene process and safety standards', icon: ShieldCheck, accent: 'emerald' },
   ];
 
   const accentColors: Record<string, string> = {

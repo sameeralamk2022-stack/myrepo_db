@@ -10,26 +10,19 @@ interface LoginPageProps {
 
 export function LoginPage({ setCurrentPage }: LoginPageProps) {
   const { profile, setProfile } = useApp();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(profile?.name || '');
+  const [phone, setPhone] = useState(profile?.phone || '');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [returningUser, setReturningUser] = useState(false);
+  const returningUser = !!(profile?.name && profile?.phone);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('mb_profile');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.name && parsed.phone) {
-          setReturningUser(true);
-          setName(parsed.name);
-          setPhone(parsed.phone);
-        }
-      }
-    } catch {}
-  }, []);
+    if (profile?.name && profile?.phone) {
+      setName(profile.name);
+      setPhone(profile.phone);
+    }
+  }, [profile]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,13 +47,11 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden bg-[#005f60]">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden bg-[#005f60]">
       {/* 3D Creative Animated Background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Gradient base */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#005f60] via-[#004849] to-[#003637]" />
 
-        {/* Floating 3D orbs */}
         <motion.div
           animate={{ y: [0, -30, 0], x: [0, 20, 0], rotate: [0, 180, 360] }}
           transition={{ repeat: Infinity, duration: 20, ease: 'easeInOut' }}
@@ -92,45 +83,45 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
           }} />
         </div>
 
-        {/* Floating food icons */}
+        {/* Floating food icons - hidden on small screens */}
         <motion.div
           animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-          className="absolute top-20 right-20 opacity-10"
+          className="absolute top-20 right-20 opacity-10 hidden sm:block"
         >
           <Utensils className="w-20 h-20 text-amber-400" />
         </motion.div>
         <motion.div
           animate={{ y: [0, 20, 0], rotate: [0, -15, 0] }}
           transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut' }}
-          className="absolute bottom-32 left-16 opacity-10"
+          className="absolute bottom-32 left-16 opacity-10 hidden sm:block"
         >
           <ShoppingBasket className="w-24 h-24 text-amber-400" />
         </motion.div>
         <motion.div
           animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
           transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-10 opacity-10"
+          className="absolute top-1/2 left-10 opacity-10 hidden sm:block"
         >
           <Clock className="w-16 h-16 text-teal-300" />
         </motion.div>
         <motion.div
           animate={{ y: [0, 12, 0], rotate: [0, -8, 0] }}
           transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut' }}
-          className="absolute top-1/4 left-1/3 opacity-10"
+          className="absolute top-1/4 left-1/3 opacity-10 hidden sm:block"
         >
           <MapPin className="w-14 h-14 text-teal-300" />
         </motion.div>
         <motion.div
           animate={{ y: [0, -18, 0], rotate: [0, 12, 0] }}
           transition={{ repeat: Infinity, duration: 9, ease: 'easeInOut' }}
-          className="absolute bottom-1/4 right-1/3 opacity-10"
+          className="absolute bottom-1/4 right-1/3 opacity-10 hidden sm:block"
         >
-          <ShieldCheck className="w-18 h-18 text-amber-400" />
+          <ShieldCheck className="w-16 h-16 text-amber-400" />
         </motion.div>
       </div>
 
-      <div className="relative z-10 w-full max-w-[380px] mx-auto my-auto">
+      <div className="relative z-10 w-full max-w-[380px] mx-auto my-auto px-2">
         {/* 3D Floating Logo */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -147,8 +138,8 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
               <ShoppingBasket className="w-8 h-8 text-amber-400" />
             </div>
           </motion.div>
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black uppercase tracking-widest">
-            <Sparkles className="w-3 h-3" />
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black uppercase tracking-widest text-center">
+            <Sparkles className="w-3 h-3 shrink-0" />
             <span>Meerut's #1 Street Food Delivery</span>
           </div>
         </motion.div>
@@ -167,13 +158,12 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
               </div>
               <p className="text-teal-200 text-[10px] font-medium uppercase tracking-widest mt-1">for DELIVERY</p>
             </div>
-            {/* Decorative wave */}
             <svg className="absolute bottom-0 left-0 right-0 w-full" viewBox="0 0 1440 40" preserveAspectRatio="none">
               <path d="M0,20 C320,40 480,0 720,20 C960,40 1120,0 1440,20 L1440,40 L0,40 Z" fill="#0f172a" opacity="0.95" />
             </svg>
           </div>
 
-          <div className="p-6">
+          <div className="p-5 sm:p-6">
             <AnimatePresence mode="wait">
               {success ? (
                 <motion.div
@@ -216,7 +206,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Enter your full name"
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
+                        className="w-full pl-9 pr-3 py-3 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
                         required
                       />
                     </div>
@@ -227,7 +217,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="Enter your phone number"
-                        className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
+                        className="w-full pl-9 pr-3 py-3 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
                         required
                       />
                     </div>
@@ -239,7 +229,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                     <button
                       type="submit"
                       disabled={loading || !name.trim() || !phone.trim()}
-                      className="w-full py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
+                      className="w-full py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
                     >
                       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Continue</span><ArrowRight className="w-4 h-4" /></>}
                     </button>

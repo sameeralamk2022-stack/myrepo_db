@@ -13,13 +13,13 @@ html, body, #root {
 }
 
 /* ===== Light Theme ===== */
-html:not(.dark), html.light, html.light body {
+html.light, html.light body, html.light #root {
   background-color: #f8fafc !important;
   color: #0f172a !important;
   color-scheme: light;
 }
 
-/* Custom Sleek Dark Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -29,24 +29,30 @@ html:not(.dark), html.light, html.light body {
   background: #020617;
 }
 
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 4px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
 
-/* Global text selection styles matching brand */
+/* Global text selection */
 ::selection {
   background-color: #f59e0b;
   color: #020617;
 }
 
 /* ===== iOS-Style Smooth Touch Animations ===== */
-
-/* Smooth tap scale on all interactive elements */
 button, a, [role="button"], .touch-scale {
   transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               opacity 0.15s ease,
@@ -55,8 +61,6 @@ button, a, [role="button"], .touch-scale {
               box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 /* Active press state - iOS style */
@@ -64,15 +68,9 @@ button:active, a:active, [role="button"]:active, .touch-scale:active {
   transform: scale(0.96);
 }
 
-/* Hover scale for desktop */
-button:hover, a:hover, [role="button"]:hover {
-  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
 /* iOS-style momentum scrolling */
 * {
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
 }
 
 /* Smooth focus transitions */
@@ -81,7 +79,7 @@ input, textarea, select {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* iOS-style spring animation utility */
+/* iOS-style spring animation */
 .spring-bounce {
   animation: springBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -92,7 +90,7 @@ input, textarea, select {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* iOS-style slide-in from bottom */
+/* iOS-style slide-in */
 .slide-in-bottom {
   animation: slideInBottom 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -102,29 +100,17 @@ input, textarea, select {
   100% { transform: translateY(0); opacity: 1; }
 }
 
-/* iOS-style fade through */
-.fade-through {
-  animation: fadeThrough 0.4s ease;
+/* Page transition */
+.page-transition {
+  animation: pageEnter 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-@keyframes fadeThrough {
-  0% { opacity: 0; transform: translateY(8px); }
+@keyframes pageEnter {
+  0% { opacity: 0; transform: translateY(12px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Premium shimmer effect for loading states */
-.shimmer-premium {
-  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.1) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmerMove 2s infinite;
-}
-
-@keyframes shimmerMove {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Glass morphism utility */
+/* Glass morphism */
 .glass {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -135,33 +121,23 @@ html.light .glass {
   background: rgba(255, 255, 255, 0.75);
 }
 
-/* Premium card hover glow */
+/* Card hover glow */
 .card-glow:hover {
   box-shadow: 0 0 30px rgba(245, 158, 11, 0.15), 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* Smooth page transition */
-.page-transition {
-  animation: pageEnter 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+/* Smooth theme transition */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@keyframes pageEnter {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Prevent text size adjust on orientation change */
+/* Prevent text size adjust */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-/* Smooth color transitions for theme toggle */
-body, .theme-transition {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Light theme overrides for common dark classes */
+/* ===== Light Theme Overrides ===== */
 html.light .bg-slate-950 { background-color: #f8fafc !important; }
 html.light .bg-slate-900 { background-color: #ffffff !important; }
 html.light .bg-slate-900\/90 { background-color: rgba(255, 255, 255, 0.9) !important; }
@@ -176,3 +152,13 @@ html.light .border-slate-700 { border-color: #cbd5e1 !important; }
 html.light .bg-slate-800 { background-color: #f1f5f9 !important; }
 html.light .bg-slate-950\/80 { background-color: rgba(248, 250, 252, 0.8) !important; }
 html.light .bg-slate-950\/95 { background-color: rgba(248, 250, 252, 0.95) !important; }
+html.light .bg-slate-950\/90 { background-color: rgba(248, 250, 252, 0.9) !important; }
+
+/* Mobile responsive helpers */
+@media (max-width: 380px) {
+  .max-w-\[380px\] { max-width: 100% !important; }
+}
+
+/* Scrollbar hide utility */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }

@@ -1,4 +1,4 @@
-import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react';
 import { AppProvider, useApp } from '@/context/AppContext';
 import { Navbar } from '@/components/Navbar';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -10,6 +10,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { OrdersPage } from '@/pages/OrdersPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { LoginPage } from '@/pages/LoginPage';
+import { DisclaimerPage } from '@/pages/DisclaimerPage';
 import { PaymentCard } from '@/components/PaymentCard';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
@@ -48,14 +49,15 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 
 function AppContent() {
   const { profile } = useApp();
-  const [currentPage, setCurrentPage] = useState<string>(profile?.name ? 'home' : 'login');
+  const isLoggedIn = !!(profile?.name && profile?.phone);
+  const [currentPage, setCurrentPage] = useState<string>(isLoggedIn ? 'home' : 'login');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cod' | 'upi'>('upi');
 
-  const isLoggedIn = !!(profile?.name && profile?.phone);
-
-  if (currentPage === 'login' && isLoggedIn) {
-    setCurrentPage('home');
-  }
+  useEffect(() => {
+    if (!isLoggedIn && currentPage !== 'login') {
+      setCurrentPage('login');
+    }
+  }, [isLoggedIn, currentPage]);
 
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
@@ -75,6 +77,7 @@ function AppContent() {
         {currentPage === 'dashboard' && isLoggedIn && <DashboardPage />}
         {currentPage === 'orders' && isLoggedIn && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
         {currentPage === 'settings' && isLoggedIn && <SettingsPage />}
+        {currentPage === 'disclaimer' && isLoggedIn && <DisclaimerPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'payment' && isLoggedIn && (
           <div className="max-w-xl mx-auto p-4 py-8">
@@ -84,7 +87,6 @@ function AppContent() {
             />
           </div>
         )}
-        {!isLoggedIn && <LoginPage setCurrentPage={setCurrentPage} />}
       </main>
 
       {currentPage !== 'login' && isLoggedIn && (

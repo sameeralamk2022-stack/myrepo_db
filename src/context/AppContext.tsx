@@ -23,6 +23,7 @@ interface AppContextType {
   logout: () => void;
   darkMode: boolean;
   setDarkMode: (mode: boolean) => void;
+  generateOrderId: () => string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -72,8 +73,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (darkMode) root.classList.add('dark');
-    else root.classList.remove('dark');
+    if (darkMode) {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
   }, [darkMode]);
 
   const addToCart = (item: any, quantity?: number, customDetails?: string) => {
@@ -105,6 +111,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const clearOrders = () => setOrders([]);
   const deleteOrder = (id: string) => setOrders(prev => prev.filter(o => o.id !== id));
 
+  const generateOrderId = () => {
+    const ts = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `MB-${ts}-${rand}`;
+  };
+
   const logout = () => {
     setProfile({ name: '', phone: '' });
     setCart([]);
@@ -121,6 +133,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       isCartOpen, setIsCartOpen,
       profile, setProfile, logout,
       darkMode, setDarkMode,
+      generateOrderId,
     }}>
       {children}
     </AppContext.Provider>
