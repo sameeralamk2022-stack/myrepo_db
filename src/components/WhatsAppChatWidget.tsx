@@ -28,7 +28,7 @@ export function WhatsAppChatWidget() {
   }>>([
     {
       sender: 'bot',
-      text: `Hi! 👋 Welcome to **Meerut Bites AI Assistant**.\n\n⚡ *Quick Info:*\n• **Stalls:** Commissioner Chowk, Begum Bridge, Shastri Nagar, Delhi Gate.\n• **Delivery:** ₹10/km (10AM-6PM) | ₹12/km (6PM-11:30PM).\n• ⚠️ *Policy:* No illegal items delivered.\n\nWhat would you like to order today?`,
+      text: `Hi! 👋 Welcome to **Meerut Bites AI Assistant**.\n\n⚡ *Quick Info:*\n• **Stalls:** Commissioner Chowk, Begum Bridge, Shastri Nagar, Delhi Gate.\n• **Delivery:** ₹10/km (10AM-6PM) | ₹12/km (6PM-11PM).\n• ⚠️ *Policy:* No illegal items delivered.\n\nWhat would you like to order today?`,
       options: [
         { label: '🍔 Order Chole Bhature', action: () => handleUserQuery('I want to order Chole Bhature') },
         { label: '🔥 Order Tandoori Chaap', action: () => handleUserQuery('I want to order Tandoori Chaap') },
@@ -125,7 +125,7 @@ export function WhatsAppChatWidget() {
       `🛒 *Items:* ${activeItem}\n` +
       `💳 *Payment:* ${method === 'UPI' ? `UPI (${captainUPI})` : 'COD'}\n` +
       `----------------------------------\n` +
-      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11:30PM)\n` +
+      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11PM)\n` +
       `⚠️ *Policy:* No illegal items.\n` +
       `----------------------------------\n` +
       `Please confirm & dispatch!`;

@@ -35,7 +35,7 @@ export function ClosedPopup({ open, onClose }: ClosedPopupProps) {
             </div>
             <h2 className="text-xl font-bold text-white mb-2">We're Closed Right Now</h2>
             <p className="text-red-400 font-medium mb-1">
-              Please order between 10 AM - 11:30 PM
+              Please order between 10 AM - 11:00 PM
             </p>
             <p className="text-slate-400 text-sm mt-4">
               {WHATSAPP_AUTO_REPLY}
