@@ -59,16 +59,20 @@ export function CheckoutModal({ open, onClose, onOrderPlaced }: CheckoutModalPro
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const mapUrl = `https://maps.google.com/?q=${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+        const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
         setGpsLocation(mapUrl);
         setGpsCoords({ lat: latitude, lng: longitude });
         setDetectingGps(false);
       },
       (err) => {
-        setGpsError(err.message || 'Could not detect location.');
+        let msg = err.message || 'Could not detect location.';
+        if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
+        if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
+        if (err.code === 3) msg = 'Location request timed out. Please try again.';
+        setGpsError(msg);
         setDetectingGps(false);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 

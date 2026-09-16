@@ -45,7 +45,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Chaat & Street Snacks',
       location: 'Abu Lane, Meerut',
       rating: 4.9,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80',
       description: 'Legendary street food destination famous for crispy aloo tikkis and tangy golgappas since 1985.',
       items: [
@@ -62,7 +62,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Beverages & Snacks',
       location: 'Begum Bridge, Meerut',
       rating: 4.8,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80',
       description: 'Traditional clay-pot tea and refreshing thick malai lassi to energize your evening.',
       items: [
@@ -78,7 +78,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Fast Food & Momos',
       location: 'Garh Road, Meerut',
       rating: 4.9,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
       description: 'Juicy steam and tandoori momos served with fiery red chilli garlic chutney.',
       items: [
@@ -94,7 +94,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Mughlai & Rolls',
       location: 'Shastri Nagar, Meerut',
       rating: 4.7,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
       description: 'Aromatic dum biryanis and jumbo Kathi rolls packed with secret spices.',
       items: [
@@ -110,7 +110,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'North Indian Thali',
       location: 'Sadar Bazaar, Meerut',
       rating: 4.8,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80',
       description: 'Stuffed parathas with white butter, pickles and a tall glass of lassi.',
       items: [
@@ -126,7 +126,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Mughlai & Rolls',
       location: 'Lisari Gate, Meerut',
       rating: 4.9,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
       description: 'Authentic Lucknowi dum biryani cooked in traditional handi with secret masala.',
       items: [
@@ -141,7 +141,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       category: 'Sweets & Desserts',
       location: 'Suraj Kund, Meerut',
       rating: 4.7,
-      timing: '10:00 AM - 11:30 PM',
+      timing: '10:00 AM - 11:00 PM',
       image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80',
       description: 'Traditional Indian sweets, fresh jalebis and savoury namkeens made fresh daily.',
       items: [
@@ -149,6 +149,54 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
         { id: 'mb-226', name: 'Gulab Jamun (6 pcs)', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Soft milk dumplings soaked in warm cardamom rose syrup.' },
         { id: 'mb-227', name: 'Ras Malai Special (4 pcs)', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Spongy cottage cheese balls in thick saffron-pistachio milk.' },
         { id: 'mb-228', name: 'Aloo Bhujia Namkeen (200g)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Crunchy spiced potato gram flour namkeen, freshly fried.' }
+      ]
+    },
+    {
+      id: 'stall-8',
+      name: 'Pandit Ji Pav Bhaji & Vada',
+      category: 'Chaat & Street Snacks',
+      location: 'Civil Lines, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80',
+      description: 'Authentic Mumbai-style pav bhaji and crispy medu vada served with coconut chutney.',
+      items: [
+        { id: 'mb-229', name: 'Special Butter Pav Bhaji', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Rich mashed vegetable curry served with butter-toasted pav buns.' },
+        { id: 'mb-230', name: 'Crispy Medu Vada (2 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Golden fried lentil donuts with sambar and coconut chutney.' },
+        { id: 'mb-231', name: 'Cheese Pav Bhaji Special', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Pav bhaji loaded with melted cheese and extra butter.' },
+        { id: 'mb-232', name: 'Vada Pav with Chutney', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Mumbai style spicy potato fritter in a bun with garlic chutney.' }
+      ]
+    },
+    {
+      id: 'stall-9',
+      name: 'Sharma Chinese Corner',
+      category: 'Fast Food & Momos',
+      location: 'Saket, Meerut',
+      rating: 4.7,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      description: 'Indo-Chinese street food with sizzling Hakka noodles, Manchurian and chilli potato.',
+      items: [
+        { id: 'mb-233', name: 'Veg Hakka Noodles', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80', description: 'Wok-tossed noodles with crunchy vegetables and soy sauce.' },
+        { id: 'mb-234', name: 'Gobi Manchurian Dry', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80', description: 'Crispy cauliflower florets tossed in spicy Manchurian sauce.' },
+        { id: 'mb-235', name: 'Chilli Potato with Honey', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80', description: 'Crispy fried potato fingers glazed with sweet chilli honey sauce.' },
+        { id: 'mb-236', name: 'Schezwan Fried Rice', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80', description: 'Spicy schezwan style fried rice with mixed vegetables.' }
+      ]
+    },
+    {
+      id: 'stall-10',
+      name: 'Gupta Ji South Indian',
+      category: 'South Indian',
+      location: 'Shastri Nagar, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80',
+      description: 'Crispy dosas, fluffy idlis and filter coffee served on banana leaves.',
+      items: [
+        { id: 'mb-237', name: 'Masala Dosa with Sambar', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Crispy rice crepe stuffed with spiced potato masala and sambar.' },
+        { id: 'mb-238', name: 'Idli Vada Combo (3 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Steamed rice cakes and fried lentil vada with coconut chutney.' },
+        { id: 'mb-239', name: 'Mysore Masala Dosa', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Spicy red chutney smeared dosa with potato filling and sambar.' },
+        { id: 'mb-240', name: 'Rava Dosa with Chutney', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Semolina crispy dosa with onion, green chilli and coconut chutney.' }
       ]
     }
   ];
@@ -167,7 +215,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
     );
   }
 
-  const categories = ['All', 'Chaat & Street Snacks', 'Beverages & Snacks', 'Fast Food & Momos', 'Mughlai & Rolls', 'North Indian Thali', 'Sweets & Desserts'];
+  const categories = ['All', 'Chaat & Street Snacks', 'Beverages & Snacks', 'Fast Food & Momos', 'Mughlai & Rolls', 'North Indian Thali', 'Sweets & Desserts', 'South Indian'];
 
   const filteredStalls = stallsData.filter(stall => {
     const matchesSearch = stall.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -178,19 +226,19 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 bg-slate-950 min-h-screen text-white">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-950 border border-amber-500/20 p-8 sm:p-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10 bg-slate-950 min-h-screen text-white">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-950 border border-amber-500/20 p-6 sm:p-8 sm:p-12">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-2xl space-y-4">
+        <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-wider">
             <Store className="w-3.5 h-3.5 animate-pulse" />
             <span>Meerut Bites Verified Stalls</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl sm:text-5xl font-black tracking-tight text-white">
             Discover Authentic Street Food Stalls
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Tap any stall to select items and customize your order. Prices are decided by the delivery captain. Operating strictly between 10:00 AM and 11:30 PM.
+          <p className="text-[11px] sm:text-sm text-slate-300 leading-relaxed">
+            Tap any stall to select items and customize your order. Prices are decided by the delivery captain. Operating strictly between 10:00 AM and 11:00 PM.
           </p>
         </div>
       </div>
@@ -198,27 +246,27 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-teal-500/10 to-amber-500/10 border border-teal-500/30 rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+        className="bg-gradient-to-r from-teal-500/10 to-amber-500/10 border border-teal-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4"
       >
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400">
-            <User className="w-6 h-6" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400">
+            <User className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
             <h3 className="text-sm font-black text-white">Personal Order</h3>
-            <p className="text-xs text-slate-400">Order from a shop not listed above? Enter your own shop and delivery details.</p>
+            <p className="text-[11px] text-slate-400">Order from a shop not listed above? Enter your own shop and delivery details.</p>
           </div>
         </div>
         <button
           onClick={() => { if (typeof setCurrentPage === 'function') setCurrentPage('personal'); }}
-          className="px-5 py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-2xl font-black text-xs flex items-center gap-2 shadow-lg shadow-teal-500/20 cursor-pointer transition-all whitespace-nowrap"
+          className="px-4 sm:px-5 py-2.5 sm:py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center gap-2 shadow-lg shadow-teal-500/20 cursor-pointer transition-all whitespace-nowrap"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>Create Personal Order</span>
         </button>
       </motion.div>
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -226,7 +274,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
             placeholder="Search by stall name, speciality, or location..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-11 pr-4 py-3.5 text-xs text-white placeholder-slate-400 focus:border-amber-500 outline-none shadow-xl transition-all"
+            className="w-full bg-slate-900 border border-slate-800 rounded-xl sm:rounded-2xl pl-11 pr-4 py-3 sm:py-3.5 text-xs text-white placeholder-slate-400 focus:border-amber-500 outline-none shadow-xl transition-all"
           />
         </div>
 
@@ -235,7 +283,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black'
                   : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
@@ -247,41 +295,41 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         {filteredStalls.map((stall) => (
           <motion.div
             key={stall.id}
             whileHover={{ y: -4 }}
-            className="bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between group hover:border-amber-500/50 transition-all"
+            className="bg-slate-900/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between group hover:border-amber-500/50 transition-all"
           >
-            <div className="relative h-60 w-full overflow-hidden bg-slate-950">
+            <div className="relative h-48 sm:h-60 w-full overflow-hidden bg-slate-950">
               <SafeImage src={stall.image} alt={stall.name} title={stall.name} category={stall.category} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent opacity-90" />
 
-              <div className="absolute top-4 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1.5 text-amber-400 text-xs font-bold">
-                <Clock className="w-3.5 h-3.5" />
+              <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-slate-950/80 backdrop-blur-md px-2.5 sm:px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1.5 text-amber-400 text-[10px] sm:text-xs font-bold">
+                <Clock className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                 <span>{stall.timing}</span>
               </div>
 
-              <div className="absolute top-4 right-4 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1 text-amber-400 text-xs font-bold">
-                <Star className="w-3.5 h-3.5 fill-current" />
+              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-slate-950/80 backdrop-blur-md px-2.5 sm:px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1 text-amber-400 text-[10px] sm:text-xs font-bold">
+                <Star className="w-3 sm:w-3.5 h-3 sm:h-3.5 fill-current" />
                 <span>{stall.rating}</span>
               </div>
             </div>
 
-            <div className="p-6 space-y-6 flex-1 flex flex-col justify-between">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase px-2 sm:px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
                     {stall.category}
                   </span>
-                  <span className="text-xs text-slate-400 flex items-center">
-                    <MapPin className="w-3.5 h-3.5 text-amber-400 mr-1" />
+                  <span className="text-[10px] sm:text-xs text-slate-400 flex items-center">
+                    <MapPin className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-400 mr-1" />
                     {stall.location}
                   </span>
                 </div>
-                <h3 className="text-2xl font-black text-white group-hover:text-amber-400 transition-colors">{stall.name}</h3>
-                <p className="text-xs text-slate-300 leading-relaxed">{stall.description}</p>
+                <h3 className="text-lg sm:text-2xl font-black text-white group-hover:text-amber-400 transition-colors">{stall.name}</h3>
+                <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed">{stall.description}</p>
                 <p className="text-[10px] text-amber-400/80 font-bold uppercase tracking-wider pt-1">
                   {stall.items.length} items available - Price decided by captain
                 </p>
@@ -289,7 +337,7 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
 
               <button
                 onClick={() => setSelectedStall(stall)}
-                className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                className="w-full py-3 sm:py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
               >
                 <span>Order Now</span>
                 <ArrowRight className="w-4 h-4" />

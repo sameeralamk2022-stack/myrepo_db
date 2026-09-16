@@ -16,7 +16,7 @@ function getISTMinutes() {
 
 function isWithinOperatingHours() {
   const totalMinutes = getISTMinutes();
-  return totalMinutes >= 600 && totalMinutes < 1410;
+  return totalMinutes >= 600 && totalMinutes < 1380;
 }
 
 function getDeliveryRate() {
@@ -60,23 +60,27 @@ export function CartDrawer() {
     setDetecting(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude, latitude: lat, longitude: lng } = pos.coords;
-        const coords = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-        setDropAddress((prev) => prev ? `${prev} [GPS: ${coords}]` : `GPS: ${coords}`);
+        const { latitude, longitude } = pos.coords;
+        const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
+        setDropAddress(mapUrl);
         setDetecting(false);
       },
-      () => {
-        alert('Could not detect your location. Please enter the address manually.');
+      (err) => {
+        let msg = 'Could not detect your location. Please enter the address manually.';
+        if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
+        if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
+        if (err.code === 3) msg = 'Location request timed out. Please try again.';
+        alert(msg);
         setDetecting(false);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
   const handleWhatsAppDispatch = () => {
     if (cartItems.length === 0) return;
     if (!canOrder) {
-      alert('Orders are only accepted between 10:00 AM and 11:30 PM.');
+      alert('Orders are only accepted between 10:00 AM and 11:00 PM.');
       return;
     }
     if (!shopName.trim()) { alert('Please enter the shop name.'); return; }
@@ -111,7 +115,7 @@ export function CartDrawer() {
       (landmark.trim() ? `🚩 Landmark: ${landmark}\n` : '') +
       `🗺️ Drop Maps: ${dropMaps}\n` +
       `----------------------------------\n` +
-      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11:30PM)\n` +
+      `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11PM)\n` +
       `⚠️ *Policy:* No illegal items.\n` +
       `----------------------------------\n` +
       `Please confirm & dispatch!`
@@ -178,7 +182,7 @@ export function CartDrawer() {
         {!canOrder && (
           <div className="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center space-x-2 text-rose-400 text-xs">
             <Clock className="w-4 h-4 flex-shrink-0" />
-            <span className="font-bold">Orders are closed. Captain DB accepts orders only from 10:00 AM to 11:30 PM.</span>
+            <span className="font-bold">Orders are closed. Captain DB accepts orders only from 10:00 AM to 11:00 PM.</span>
           </div>
         )}
 
@@ -371,7 +375,7 @@ export function CartDrawer() {
 
                 {!isDayTime && (
                   <p className="text-[10px] text-amber-400/80 font-bold">
-                    Night orders (6 PM - 10 AM): Only UPI payment is available.
+                    Night orders (6 PM - 11 PM): Only UPI payment is available.
                   </p>
                 )}
                 {isDayTime && (
@@ -397,7 +401,7 @@ export function CartDrawer() {
                   <span>Delivery Rate</span>
                 </div>
                 <p className="text-xs text-slate-300 font-bold">
-                  {isDayTime ? 'Day Rate (10 AM - 6 PM): ₹10/km' : 'Night Rate (6 PM - 10 AM): ₹12/km'}
+                  {isDayTime ? 'Day Rate (10 AM - 6 PM): ₹10/km' : 'Night Rate (6 PM - 11 PM): ₹12/km'}
                 </p>
                 <p className="text-[10px] text-slate-500">{SECURITY_DISCLAIMER}</p>
               </div>
@@ -421,7 +425,7 @@ export function CartDrawer() {
               </button>
             ) : (
               <div className="w-full py-4 bg-rose-500/20 border border-rose-500/40 text-rose-300 rounded-2xl font-black text-xs text-center">
-                Ordering closed - Available 10:00 AM to 11:30 PM only
+                Ordering closed - Available 10:00 AM to 11:00 PM only
               </div>
             )}
           </div>

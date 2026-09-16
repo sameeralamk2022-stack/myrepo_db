@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Navigation, Edit3, Trash2, Plus, X, Loader2 } from 'lucide-react';
+import { MapPin, Navigation, Edit3, Trash2, Plus, X, Loader2, Check } from 'lucide-react';
 import type { Address } from '@/types';
 
 interface LocationPickerProps {
@@ -18,11 +18,12 @@ export function LocationPicker({ addresses, onAdd, onRemove, selected, onSelect,
   const [manualLabel, setManualLabel] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const watchRef = useRef<number | null>(null);
+  const [gpsResult, setGpsResult] = useState<{ url: string; lat: number; lng: number } | null>(null);
 
   const detectGPS = () => {
     setLoading(true);
     setError('');
+    setGpsResult(null);
     if (!navigator.geolocation) {
       setError('GPS not available on this device.');
       setLoading(false);
@@ -32,6 +33,7 @@ export function LocationPicker({ addresses, onAdd, onRemove, selected, onSelect,
       (pos) => {
         const { latitude, longitude } = pos.coords;
         const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
+        setGpsResult({ url: mapUrl, lat: latitude, lng: longitude });
         const newAddr: Address = {
           id: `addr_${Date.now()}`,
           label: 'GPS Location',
@@ -42,10 +44,14 @@ export function LocationPicker({ addresses, onAdd, onRemove, selected, onSelect,
         setLoading(false);
       },
       (err) => {
-        setError(err.message || 'Could not detect location.');
+        let msg = err.message || 'Could not detect location.';
+        if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
+        if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
+        if (err.code === 3) msg = 'Location request timed out. Please try again.';
+        setError(msg);
         setLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -68,26 +74,52 @@ export function LocationPicker({ addresses, onAdd, onRemove, selected, onSelect,
     <div className="space-y-3">
       <label className="text-sm font-medium text-slate-300">{label}</label>
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={detectGPS}
-          disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-saffron-600/20 border border-saffron-600/40 text-saffron-300 text-sm font-medium hover:bg-saffron-600/30 transition-colors active:scale-95"
-        >
-          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Detecting location...</> : <><Navigation className="w-4 h-4" /> Detect GPS</>}
-        </button>
-        <button
-          type="button"
-          onClick={() => setManualOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/10 transition-colors active:scale-95"
-        >
-          <Plus className="w-4 h-4" />
-          Add Address
-        </button>
-      </div>
+      {/* GPS detect button - prominent */}
+      <button
+        type="button"
+        onClick={detectGPS}
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-saffron-600/20 border border-saffron-600/40 text-saffron-300 text-sm font-bold hover:bg-saffron-600/30 transition-all active:scale-95 disabled:opacity-50"
+      >
+        {loading ? (
+          <><Loader2 className="w-4 h-4 animate-spin" /> Detecting your location...</>
+        ) : (
+          <><Navigation className="w-4 h-4" /> Detect My Current Location</>
+        )}
+      </button>
 
-      {error && <p className="text-red-400 text-xs">{error}</p>}
+      {/* GPS result box - shows the URL that can be clicked */}
+      {gpsResult && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-emerald-400">Location detected!</p>
+            <a
+              href={gpsResult.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-teal-400 hover:text-teal-300 underline truncate block"
+            >
+              {gpsResult.lat.toFixed(4)}, {gpsResult.lng.toFixed(4)} — Open in Google Maps
+            </a>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30">
+          <p className="text-red-400 text-xs font-medium">{error}</p>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setManualOpen(true)}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/10 transition-colors active:scale-95"
+      >
+        <Plus className="w-4 h-4" />
+        Add Address Manually
+      </button>
 
       {addresses.length > 0 && (
         <div className="space-y-2">
@@ -95,7 +127,7 @@ export function LocationPicker({ addresses, onAdd, onRemove, selected, onSelect,
             <div
               key={addr.id}
               className={`flex items-center gap-2 p-3 rounded-lg border transition-colors ${
-                selected === addr.text || selected.includes(addr.text.split(',')[0])
+                selected === addr.text
                   ? 'bg-saffron-600/10 border-saffron-600/40'
                   : 'bg-white/5 border-white/10'
               }`}
