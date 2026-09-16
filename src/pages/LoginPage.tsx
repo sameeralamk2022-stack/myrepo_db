@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, CheckCircle2, User, Phone, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, MapPin, ShieldCheck } from 'lucide-react';
+import { Loader2, CheckCircle2, User, Phone, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, MapPin, ShieldCheck, LogIn, UserPlus } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { OWNER_NAME } from '@/lib/constants';
 
@@ -10,21 +10,36 @@ interface LoginPageProps {
 
 export function LoginPage({ setCurrentPage }: LoginPageProps) {
   const { profile, setProfile } = useApp();
-  const [name, setName] = useState(profile?.name || '');
-  const [phone, setPhone] = useState(profile?.phone || '');
+  const isRegistered = !!(profile?.name && profile?.phone);
+  const [mode, setMode] = useState<'login' | 'register'>(isRegistered ? 'login' : 'register');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const returningUser = !!(profile?.name && profile?.phone);
 
   useEffect(() => {
-    if (profile?.name && profile?.phone) {
-      setName(profile.name);
-      setPhone(profile.phone);
+    if (isRegistered) {
+      setMode('login');
+    } else {
+      setMode('register');
     }
-  }, [profile]);
+  }, [isRegistered]);
 
   const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+      setTimeout(() => {
+        if (typeof setCurrentPage === 'function') setCurrentPage('home');
+      }, 1000);
+    }, 600);
+  };
+
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) {
       setError('Please enter both your name and phone number.');
@@ -175,30 +190,76 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                   <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center mb-3">
                     <CheckCircle2 className="w-7 h-7 text-emerald-400" />
                   </div>
-                  <p className="text-white font-black text-xs">Welcome, {name}!</p>
+                  <p className="text-white font-black text-xs">
+                    {mode === 'register' ? `Welcome, ${name}!` : `Welcome back, ${profile?.name}!`}
+                  </p>
                   <p className="text-teal-300 text-[10px] mt-1 font-bold">Redirecting to home...</p>
                 </motion.div>
-              ) : (
+              ) : mode === 'login' && isRegistered ? (
+                /* === RETURNING USER: JUST A LOGIN BUTTON === */
                 <motion.div
-                  key="form"
+                  key="login"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 bg-teal-500/10 border border-teal-500/30 rounded-xl text-center"
+                  >
+                    <div className="flex items-center justify-center gap-2 mb-1.5">
+                      <div className="w-9 h-9 rounded-full bg-teal-500/20 border border-teal-500/40 flex items-center justify-center">
+                        <User className="w-4 h-4 text-teal-400" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-black text-white">{profile.name}</p>
+                        <p className="text-[10px] text-teal-300 font-bold">{profile.phone}</p>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-teal-300 font-bold">
+                      Your details are saved on this device. Tap Login to continue.
+                    </p>
+                  </motion.div>
+
+                  <form onSubmit={handleLogin}>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
+                    >
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><LogIn className="w-4 h-4" /><span>Login</span></>}
+                    </button>
+                  </form>
+
+                  <div className="text-center pt-1">
+                    <button
+                      onClick={() => setMode('register')}
+                      className="text-[10px] text-teal-300 hover:text-teal-200 font-bold cursor-pointer underline underline-offset-2"
+                    >
+                      Not you? Register new account
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                /* === NEW USER: REGISTRATION FORM === */
+                <motion.div
+                  key="register"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="space-y-3"
                 >
-                  {returningUser && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-2.5 bg-teal-500/10 border border-teal-500/30 rounded-xl text-center mb-2"
-                    >
-                      <p className="text-[10px] text-teal-300 font-bold">
-                        Welcome back, {name}! Your details are saved. Tap Continue to order.
-                      </p>
-                    </motion.div>
-                  )}
+                  <div className="flex items-center gap-2 mb-1">
+                    <UserPlus className="w-4 h-4 text-teal-400" />
+                    <h3 className="text-xs font-black text-teal-300 uppercase tracking-wider">One-Time Registration</h3>
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-bold mb-2">
+                    Enter your name and phone number once. After this, you can login with a single tap.
+                  </p>
 
-                  <form onSubmit={handleLogin} className="space-y-2.5">
+                  <form onSubmit={handleRegister} className="space-y-2.5">
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-400" />
                       <input
@@ -231,15 +292,20 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                       disabled={loading || !name.trim() || !phone.trim()}
                       className="w-full py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
                     >
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Continue</span><ArrowRight className="w-4 h-4" /></>}
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><UserPlus className="w-4 h-4" /><span>Register & Continue</span></>}
                     </button>
                   </form>
 
-                  <p className="text-center text-teal-300 text-[10px] font-bold pt-1">
-                    {returningUser
-                      ? 'Your details are saved on this device. You can change them later in Settings.'
-                      : 'Enter your details to start ordering. You can change them later in Settings.'}
-                  </p>
+                  {isRegistered && (
+                    <div className="text-center pt-1">
+                      <button
+                        onClick={() => setMode('login')}
+                        className="text-[10px] text-teal-300 hover:text-teal-200 font-bold cursor-pointer underline underline-offset-2"
+                      >
+                        Back to login
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

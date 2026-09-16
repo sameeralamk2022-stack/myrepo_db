@@ -28,7 +28,7 @@ export function SettingsPage({ setCurrentPage }: SettingsPageProps = {}): JSX.El
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
       const istDate = new Date(utc + (3600000 * 5.5));
       const totalMinutes = istDate.getHours() * 60 + istDate.getMinutes();
-      const isClosed = totalMinutes >= 1410 || totalMinutes < 360;
+      const isClosed = totalMinutes >= 1380 || totalMinutes < 600;
       return { isClosed };
     } catch {
       return { isClosed: false };
@@ -128,7 +128,7 @@ export function SettingsPage({ setCurrentPage }: SettingsPageProps = {}): JSX.El
           <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
             <span className="text-slate-400 font-bold block">Current Status:</span>
             <span className={`font-black ${isClosed ? 'text-rose-400' : 'text-emerald-400'}`}>
-              {isClosed ? 'Closed (After 11:30 PM)' : 'Open for Orders'}
+              {isClosed ? 'Closed (After 11:00 PM)' : 'Open for Orders'}
             </span>
           </div>
         </div>
@@ -139,7 +139,7 @@ export function SettingsPage({ setCurrentPage }: SettingsPageProps = {}): JSX.El
             <span className="text-amber-400">₹10 / km</span>
           </div>
           <div className="flex justify-between text-slate-300 font-bold">
-            <span>Night Rate (6:00 PM - 10:30 AM):</span>
+            <span>Night Rate (6:00 PM - 11:00 PM):</span>
             <span className="text-amber-400">₹12 / km</span>
           </div>
         </div>

@@ -51,9 +51,9 @@ export function getPaymentWindowLabel(): string {
   const now = new Date();
   const hour = now.getHours();
   if (hour >= UPI_ONLY_START_HOUR) {
-    return `After 7 PM: UPI only`;
+    return `After 6 PM: UPI only`;
   }
-  return `10 AM – 7 PM: Cash or UPI · 7 PM – 11 PM: UPI only`;
+  return `10 AM – 6 PM: Cash or UPI · 6 PM – 11 PM: UPI only`;
 }
 
 export function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {

@@ -39,7 +39,7 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
       const istDate = new Date(utc + (3600000 * 5.5));
       const totalMinutes = istDate.getHours() * 60 + istDate.getMinutes();
-      const isClosedAfterHours = totalMinutes >= 1410 || totalMinutes < 600;
+      const isClosedAfterHours = totalMinutes >= 1380 || totalMinutes < 600;
       const isDayTime = totalMinutes >= 600 && totalMinutes < 1080;
       return { isClosedAfterHours, isDayTime, ratePerKm: isDayTime ? 10 : 12 };
     } catch {
@@ -149,7 +149,7 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
             <div className="flex items-center justify-center gap-2">
               <span className={`inline-block w-2 h-2 rounded-full ${isClosedAfterHours ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500 animate-pulse'}`} />
               <span className="text-[11px] font-black text-white uppercase tracking-wider">
-                {isClosedAfterHours ? 'Currently Closed (Open 10:00 AM to 11:30 PM)' : 'Open Now: 10:00 AM to 11:30 PM'}
+                {isClosedAfterHours ? 'Currently Closed (Open 10:00 AM to 11:00 PM)' : 'Open Now: 10:00 AM to 11:00 PM'}
               </span>
             </div>
             <p className="text-[11px] font-bold text-amber-400">

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Clock, CheckCircle2, Package, MapPin, Navigation, Store, Flag, CreditCard, User, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Clock, CheckCircle2, Package, MapPin, Navigation, Store, Flag, CreditCard, User, Phone, Eye, EyeOff } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 function getISTMinutes() {
@@ -15,6 +15,7 @@ function getISTMinutes() {
 
 function getDeliveryRate() {
   const totalMinutes = getISTMinutes();
+  // Day: 10 AM (600) to 6 PM (1080). Night: 6 PM (1080) to 11 PM (1380).
   const isDayTime = totalMinutes >= 600 && totalMinutes < 1080;
   return { isDayTime, ratePerKm: isDayTime ? 10 : 12 };
 }
@@ -30,6 +31,16 @@ interface OrdersPageProps {
 export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
   const { orders } = useApp();
   const { isDayTime } = getDeliveryRate();
+  const [phoneVisible, setPhoneVisible] = useState<Record<string, boolean>>({});
+
+  const togglePhone = (orderId: string) => {
+    setPhoneVisible(prev => ({ ...prev, [orderId]: !prev[orderId] }));
+  };
+
+  const maskPhone = (phone: string) => {
+    if (phone.length <= 4) return '****';
+    return phone.slice(0, 2) + '****' + phone.slice(-2);
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8 bg-slate-950 min-h-screen text-white">
@@ -49,7 +60,7 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
             <p className={`text-lg font-black ${isDayTime ? 'text-amber-400' : 'text-slate-600'}`}>₹10/km</p>
           </div>
           <div className={`p-3 rounded-xl border text-center ${!isDayTime ? 'bg-amber-500/10 border-amber-500/30' : 'bg-slate-950 border-slate-800'}`}>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Night (6 PM - 10 AM)</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Night (6 PM - 11 PM)</p>
             <p className={`text-lg font-black ${!isDayTime ? 'text-amber-400' : 'text-slate-600'}`}>₹12/km</p>
           </div>
         </div>
@@ -81,8 +92,8 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
                 </span>
               </div>
 
-              {/* Customer Details */}
-              {(order.customerName || order.customerPhone) && (
+              {/* Customer Details with phone toggle */}
+              {(order.customerName || order.customerPhone || order.phone) && (
                 <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1">
                   {order.customerName && (
                     <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-bold">
@@ -90,10 +101,19 @@ export function OrdersPage({ onNavigateStalls }: OrdersPageProps) {
                       <span>{order.customerName}</span>
                     </div>
                   )}
-                  {order.customerPhone && (
+                  {(order.customerPhone || order.phone) && (
                     <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-bold">
                       <Phone className="w-3 h-3 text-amber-400" />
-                      <span>{order.customerPhone}</span>
+                      <span>
+                        {phoneVisible[order.id] ? (order.customerPhone || order.phone) : maskPhone(order.customerPhone || order.phone)}
+                      </span>
+                      <button
+                        onClick={() => togglePhone(order.id)}
+                        className="ml-1 text-teal-400 hover:text-teal-300 cursor-pointer"
+                        title={phoneVisible[order.id] ? 'Hide number' : 'Show number'}
+                      >
+                        {phoneVisible[order.id] ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      </button>
                     </div>
                   )}
                   {order.zone && (
