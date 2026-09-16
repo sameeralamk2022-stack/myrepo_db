@@ -76,7 +76,7 @@ function AppContent() {
         )}
         {currentPage === 'dashboard' && isLoggedIn && <DashboardPage />}
         {currentPage === 'orders' && isLoggedIn && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
-        {currentPage === 'settings' && isLoggedIn && <SettingsPage />}
+        {currentPage === 'settings' && isLoggedIn && <SettingsPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'disclaimer' && isLoggedIn && <DisclaimerPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'payment' && isLoggedIn && (

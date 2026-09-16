@@ -3,7 +3,11 @@ import { Settings, Star, AlertTriangle, Send, Code, Phone, MessageCircle, User, 
 import { useApp } from '@/context/AppContext';
 import { DEVELOPER } from '@/lib/constants';
 
-export function SettingsPage(): JSX.Element {
+interface SettingsPageProps {
+  setCurrentPage?: (page: string) => void;
+}
+
+export function SettingsPage({ setCurrentPage }: SettingsPageProps = {}): JSX.Element {
   const { profile, setProfile, logout, darkMode, setDarkMode } = useApp();
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
@@ -272,6 +276,14 @@ export function SettingsPage(): JSX.Element {
         <p className="text-xs text-slate-300 font-bold leading-relaxed">
           Illegal items are not delivered at any cost anytime. All orders are subject to captain verification and strict local guidelines.
         </p>
+        {setCurrentPage && (
+          <button
+            onClick={() => setCurrentPage('disclaimer')}
+            className="mt-2 text-[11px] font-black text-teal-400 hover:text-teal-300 cursor-pointer underline underline-offset-2"
+          >
+            View Full Hygiene & Safety Standards
+          </button>
+        )}
       </div>
 
       {/* Logout Section */}
