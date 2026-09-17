@@ -333,6 +333,18 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
                     <span>{detecting ? 'Detecting...' : 'Detect My Location'}</span>
                   </button>
                 </div>
+                {gpsStatus.type === 'success' && (
+                  <div className="flex items-center gap-1.5 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="text-[10px] text-emerald-400 font-bold">{gpsStatus.msg}</span>
+                  </div>
+                )}
+                {gpsStatus.type === 'error' && (
+                  <div className="flex items-center gap-1.5 p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+                    <X className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                    <span className="text-[10px] text-red-400 font-bold">{gpsStatus.msg}</span>
+                  </div>
+                )}
                 <input
                   type="text"
                   placeholder="Enter your house no, street, area..."

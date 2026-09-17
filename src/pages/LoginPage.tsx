@@ -23,6 +23,10 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
       setMode('login');
       setName(profile?.name || '');
       setPhone(profile?.phone || '');
+      const t = setTimeout(() => {
+        if (typeof setCurrentPage === 'function') setCurrentPage('home');
+      }, 800);
+      return () => clearTimeout(t);
     } else {
       setMode('register');
     }
@@ -198,7 +202,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                   <p className="text-teal-300 text-[10px] mt-1 font-bold">Redirecting to home...</p>
                 </motion.div>
               ) : mode === 'login' && isRegistered ? (
-                /* === RETURNING USER: JUST A LOGIN BUTTON === */
+                /* === RETURNING USER: AUTO-LOGIN WITH WELCOME === */
                 <motion.div
                   key="login"
                   initial={{ opacity: 0 }}
@@ -221,19 +225,14 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                       </div>
                     </div>
                     <p className="text-[10px] text-teal-300 font-bold">
-                      Your details are saved on this device. Tap Login to continue.
+                      Welcome back! Logging you in automatically...
                     </p>
                   </motion.div>
 
-                  <form onSubmit={handleLogin}>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-3.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
-                    >
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><LogIn className="w-4 h-4" /><span>Login</span></>}
-                    </button>
-                  </form>
+                  <div className="flex items-center justify-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-teal-400" />
+                    <span className="text-[10px] text-teal-300 font-bold">Redirecting to home...</span>
+                  </div>
 
                   <div className="text-center pt-1">
                     <button
