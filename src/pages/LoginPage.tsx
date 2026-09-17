@@ -12,8 +12,8 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
   const { profile, setProfile } = useApp();
   const isRegistered = !!(profile?.name && profile?.phone);
   const [mode, setMode] = useState<'login' | 'register'>(isRegistered ? 'login' : 'register');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(profile?.name || '');
+  const [phone, setPhone] = useState(profile?.phone || '');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -21,10 +21,12 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
   useEffect(() => {
     if (isRegistered) {
       setMode('login');
+      setName(profile?.name || '');
+      setPhone(profile?.phone || '');
     } else {
       setMode('register');
     }
-  }, [isRegistered]);
+  }, [isRegistered, profile?.name, profile?.phone]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();

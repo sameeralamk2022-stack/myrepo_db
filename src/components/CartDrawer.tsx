@@ -40,6 +40,7 @@ export function CartDrawer() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [bookedOrderId, setBookedOrderId] = useState('');
   const [detecting, setDetecting] = useState(false);
+  const [gpsStatus, setGpsStatus] = useState<{ type: 'success' | 'error' | ''; msg: string }>({ type: '', msg: '' });
 
   if (!isCartOpen) return null;
 
@@ -54,15 +55,17 @@ export function CartDrawer() {
 
   const detectLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported on your device.');
+      setGpsStatus({ type: 'error', msg: 'GPS is not supported on this device.' });
       return;
     }
     setDetecting(true);
+    setGpsStatus({ type: '', msg: '' });
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
         const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
         setDropAddress(mapUrl);
+        setGpsStatus({ type: 'success', msg: `Location detected: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
         setDetecting(false);
       },
       (err) => {
@@ -70,7 +73,7 @@ export function CartDrawer() {
         if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
         if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
         if (err.code === 3) msg = 'Location request timed out. Please try again.';
-        alert(msg);
+        setGpsStatus({ type: 'error', msg });
         setDetecting(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -302,6 +305,18 @@ export function CartDrawer() {
                       <span>{detecting ? 'Detecting...' : 'Detect My Location'}</span>
                     </button>
                   </div>
+                  {gpsStatus.type === 'success' && (
+                    <div className="flex items-center gap-1.5 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span className="text-[10px] text-emerald-400 font-bold">{gpsStatus.msg}</span>
+                    </div>
+                  )}
+                  {gpsStatus.type === 'error' && (
+                    <div className="flex items-center gap-1.5 p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+                      <X className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                      <span className="text-[10px] text-red-400 font-bold">{gpsStatus.msg}</span>
+                    </div>
+                  )}
                   <input
                     type="text"
                     placeholder="Enter your house no, street, area..."

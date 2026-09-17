@@ -57,6 +57,9 @@ function AppContent() {
     if (!isLoggedIn && currentPage !== 'login') {
       setCurrentPage('login');
     }
+    if (isLoggedIn && currentPage === 'login') {
+      setCurrentPage('home');
+    }
   }, [isLoggedIn, currentPage]);
 
   return (

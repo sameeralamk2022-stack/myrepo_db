@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   ArrowLeft, Plus, Trash2, Send, CheckCircle, MapPin, Navigation,
-  Store, Flag, QrCode, Clock, ShoppingBag, Utensils, Crosshair, Loader2
+  Store, Flag, QrCode, Clock, ShoppingBag, Utensils, Crosshair, Loader2, X
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { QR_CODE_URL, WHATSAPP_NUMBER, SECURITY_DISCLAIMER } from '@/lib/constants';
@@ -49,6 +49,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
   const [isSuccess, setIsSuccess] = useState(false);
   const [bookedOrderId, setBookedOrderId] = useState('');
   const [detecting, setDetecting] = useState(false);
+  const [gpsStatus, setGpsStatus] = useState<{ type: 'success' | 'error' | ''; msg: string }>({ type: '', msg: '' });
 
   const canOrder = isWithinOperatingHours();
   const { isDayTime } = getDeliveryRate();
@@ -71,15 +72,17 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
 
   const detectLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported on your device.');
+      setGpsStatus({ type: 'error', msg: 'GPS is not supported on this device.' });
       return;
     }
     setDetecting(true);
+    setGpsStatus({ type: '', msg: '' });
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
         const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
         setDropAddress(mapUrl);
+        setGpsStatus({ type: 'success', msg: `Location detected: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
         setDetecting(false);
       },
       (err) => {
@@ -87,7 +90,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
         if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
         if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
         if (err.code === 3) msg = 'Location request timed out. Please try again.';
-        alert(msg);
+        setGpsStatus({ type: 'error', msg });
         setDetecting(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
