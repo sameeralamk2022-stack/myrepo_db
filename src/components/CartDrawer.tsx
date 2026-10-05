@@ -119,6 +119,7 @@ export function CartDrawer() {
       `📍 Drop: ${dropAddress}\n` +
       (landmark.trim() ? `🚩 Landmark: ${landmark}\n` : '') +
       `🗺️ Drop Maps: ${dropMaps}\n` +
+      (gpsCoords ? `📍 GPS Coordinates: ${gpsCoords.lat.toFixed(6)}, ${gpsCoords.lng.toFixed(6)}\n` : '') +
       `----------------------------------\n` +
       `📦 *Rates:* ₹10/km (10AM-6PM) | ₹12/km (6PM-11PM)\n` +
       `⚠️ *Policy:* No illegal items.\n` +
@@ -312,6 +313,17 @@ export function CartDrawer() {
                       <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span className="text-[10px] text-emerald-400 font-bold">{gpsStatus.msg}</span>
                     </div>
+                  )}
+                  {gpsCoords && (
+                    <a
+                      href={`https://www.google.com/maps?q=${gpsCoords.lat},${gpsCoords.lng}&z=18`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[10px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                    >
+                      <Navigation className="w-3 h-3" />
+                      <span>View precise GPS location on map</span>
+                    </a>
                   )}
                   {gpsStatus.type === 'error' && (
                     <div className="flex items-center gap-1.5 p-2 rounded-lg bg-red-500/10 border border-red-500/30">
