@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, LogOut, User as UserIcon, Sun, Moon, ShieldCheck } from 'lucide-react';
+import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, ShoppingBasket, LogOut, User as UserIcon, Sun, Moon, ShieldCheck } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 interface NavbarProps {
@@ -36,8 +36,10 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
             onClick={() => setCurrentPage('home')}
             className="flex items-center space-x-2 sm:space-x-2.5 cursor-pointer group shrink-0"
           >
-            <div className="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-              MB
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-300 p-0.5 shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full rounded-[10px] bg-slate-950 flex items-center justify-center border border-amber-400/40">
+                <ShoppingBasket className="w-5 h-5 text-amber-400" />
+              </div>
             </div>
             <div className="hidden xs:block sm:block">
               <span className="text-xs font-black text-white block">Meerut Bites</span>
@@ -45,7 +47,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             {/* User badge - hidden on mobile */}
             {profile?.name && (
               <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-xl">
@@ -54,11 +56,12 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
               </div>
             )}
 
-            {/* Dark/Light theme toggle */}
+            {/* Dark/Light theme toggle - fixed positioning */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 rounded-xl transition-all cursor-pointer group/toggle shrink-0"
+              className="relative p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 rounded-xl transition-all cursor-pointer group/toggle shrink-0 flex items-center justify-center"
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle theme"
             >
               {darkMode ? (
                 <Sun className="w-4 h-4 text-amber-400 group-hover/toggle:rotate-90 transition-transform duration-300" />

@@ -134,15 +134,24 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
       <div className="relative z-10 overflow-hidden border-b border-slate-800/80 py-10 sm:py-14 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10 flex flex-col items-center">
 
-          {/* 3D Floating Logo */}
+          {/* 3D Floating Logo - Delivery Basket Brand */}
           <motion.div
             animate={{ scale: [1, 1.05, 1], rotate: [0, 3, -3, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-            className="w-18 h-18 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-300 p-1 shadow-2xl shadow-amber-500/30 flex items-center justify-center mb-2"
+            className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-300 p-1.5 shadow-2xl shadow-amber-500/40 flex items-center justify-center mb-2"
           >
-            <div className="w-full h-full rounded-full bg-slate-950 flex flex-col items-center justify-center border-2 border-amber-400 overflow-hidden">
-              <ShoppingBasket className="w-8 h-8 sm:w-12 sm:h-12 text-amber-400" />
+            <div className="w-full h-full rounded-2xl bg-slate-950 flex flex-col items-center justify-center border-2 border-amber-400 overflow-hidden">
+              <ShoppingBasket className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400" />
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-col items-center mb-1"
+          >
+            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Meerut Bites</h2>
           </motion.div>
 
           <motion.div

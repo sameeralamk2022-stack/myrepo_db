@@ -310,6 +310,150 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
         { id: 'mb-267', name: 'Hot Rabri with Jalebi', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Thick sweetened milk rabri served with crisp hot jalebis.' },
         { id: 'mb-268', name: 'Gajar Ka Halwa (Seasonal)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Slow-cooked grated carrots with milk, ghee, dry fruits and khoya.' }
       ]
+    },
+    {
+      id: 'stall-18',
+      name: 'Pandit Rabri Bhandar',
+      category: 'Sweets & Desserts',
+      location: 'Lakshmi Nagar, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80',
+      description: 'Thick creamy rabri, rasmalai and traditional milk sweets made fresh every morning.',
+      items: [
+        { id: 'mb-269', name: 'Special Thick Rabri (250g)', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Slow-reduced thickened milk with saffron, cardamom and crushed pistachios.' },
+        { id: 'mb-270', name: 'Chenna Malai (4 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Fresh chenna dumplings in light saffron milk, garnished with pistachio.' },
+        { id: 'mb-271', name: 'Milk Cake Special (200g)', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Dense caramelized milk fudge with grainy texture and cardamom flavor.' },
+        { id: 'mb-272', name: 'Kalakand (200g)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Soft grainy milk barfi topped with silver vark and chopped almonds.' }
+      ]
+    },
+    {
+      id: 'stall-19',
+      name: 'Rolls Factory Meerut',
+      category: 'Fast Food & Momos',
+      location: 'Ganga Nagar, Meerut',
+      rating: 4.6,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
+      description: 'Wraps, kathi rolls and frankies loaded with fillings and house sauces.',
+      items: [
+        { id: 'mb-273', name: 'Paneer Tikka Kathi Roll', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', description: 'Grilled paneer tikka wrapped in flaky paratha with mint chutney and onions.' },
+        { id: 'mb-274', name: 'Soya Chaap Frankie', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', description: 'Tandoori soya chaap rolled in whole wheat roti with spicy mayo.' },
+        { id: 'mb-275', name: 'Egg Chicken Double Roll', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', description: 'Double egg paratha stuffed with chicken keema and tangy sauces.' },
+        { id: 'mb-276', name: 'Veg Schezwan Wrap', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', description: 'Spicy schezwan veg filling wrapped in soft roti with crunchy salad.' }
+      ]
+    },
+    {
+      id: 'stall-20',
+      name: 'Chai Tapri & Maggi Point',
+      category: 'Beverages & Snacks',
+      location: 'Kanker Khera, Meerut',
+      rating: 4.5,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80',
+      description: 'Cutting chai, masala maggie, bun-maska and evening snacks under the open sky.',
+      items: [
+        { id: 'mb-277', name: 'Masala Maggi Special', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80', description: 'Desi-style masala maggi with veggies, cheese and butter on top.' },
+        { id: 'mb-278', name: 'Cutting Chai (2 cups)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80', description: 'Strong ginger-cardamom milk tea served in traditional kulhad.' },
+        { id: 'mb-279', name: 'Cheese Maggi with Veggies', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80', description: 'Maggi loaded with melted cheese, corn, capsicum and herbs.' },
+        { id: 'mb-280', name: 'Bun Maska with Chai Combo', price: 0, rating: 4.4, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80', description: 'Soft bun with generous butter and jam paired with hot masala chai.' }
+      ]
+    },
+    {
+      id: 'stall-21',
+      name: 'Lucknowi Biryani House',
+      category: 'Mughlai & Rolls',
+      location: 'Shahpeer Road, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
+      description: 'Authentic Lucknowi dum biryani, shahi tukda and galouti kebabs cooked in sealed handi.',
+      items: [
+        { id: 'mb-281', name: 'Veg Dum Biryani with Raita', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Fragrant basmati rice layered with spiced vegetables and saffron, sealed dum cooked.' },
+        { id: 'mb-282', name: 'Galouti Kebab with Sheermal', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Melt-in-mouth mutton kebabs served with warm saffron sheermal bread.' },
+        { id: 'mb-283', name: 'Shahi Tukda (2 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Fried bread soaked in rabri with rose syrup, silver vark and pistachio.' },
+        { id: 'mb-284', name: 'Chicken Korma with Naan', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Creamy white korma with tender chicken pieces served with butter naan.' }
+      ]
+    },
+    {
+      id: 'stall-22',
+      name: 'Corner Sandwich & Pizza',
+      category: 'Fast Food & Momos',
+      location: 'Roorkee Road, Meerut',
+      rating: 4.5,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      description: 'Grilled sandwiches, wood-fired pizzas and cheesy garlic bread — all made fresh.',
+      items: [
+        { id: 'mb-285', name: 'Triple Cheese Veg Sandwich', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=800&q=80', description: 'Toasted triple-decker with cheese, veggies and mint chutney, grilled crisp.' },
+        { id: 'mb-286', name: 'Margherita Pizza (Medium)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80', description: 'Classic mozzarella cheese pizza with basil and tangy tomato sauce.' },
+        { id: 'mb-287', name: 'Cheese Garlic Bread (6 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80', description: 'Crispy garlic bread loaded with mozzarella cheese and herbs.' },
+        { id: 'mb-288', name: 'Paneer Tikka Pizza (Medium)', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80', description: 'Tandoori paneer tikka pizza with capsicum, onion and extra cheese.' }
+      ]
+    },
+    {
+      id: 'stall-23',
+      name: 'Gola Sambhar South Indian',
+      category: 'South Indian',
+      location: 'Jawahar Road, Meerut',
+      rating: 4.6,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80',
+      description: 'Authentic dosa, vada, upma and piping hot sambar with coconut chutney.',
+      items: [
+        { id: 'mb-289', name: 'Plain Dosa with Sambar', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Crispy golden rice crepe with sambar and triple coconut chutney.' },
+        { id: 'mb-290', name: 'Onion Rava Dosa', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Lacy crispy semolina dosa with onion, green chilli and curry leaves.' },
+        { id: 'mb-291', name: 'Vada Sambar (4 pcs)', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Crispy fried lentil donuts soaked in hot tangy sambar.' },
+        { id: 'mb-292', name: 'Rava Upma with Chutney', price: 0, rating: 4.4, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Savoury semolina upma with mustard, curry leaves and roasted peanuts.' }
+      ]
+    },
+    {
+      id: 'stall-24',
+      name: 'Sharma Pakode & Kachori',
+      category: 'Chaat & Street Snacks',
+      location: 'Sardhana Road, Meerut',
+      rating: 4.6,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+      description: 'Hot crispy pakode, kachori-sabzi and street-style sandwiches fresh from the kadhai.',
+      items: [
+        { id: 'mb-293', name: 'Mixed Veg Pakode (250g)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', description: 'Assorted vegetable fritters — onion, potato, spinach and paneer, fried crisp.' },
+        { id: 'mb-294', name: 'Pyaaz Kachori with Sabzi (2 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', description: 'Spiced onion stuffed kachoris with tangy potato-onion gravy.' },
+        { id: 'mb-295', name: 'Bread Pakora with Chutney (2 pcs)', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', description: 'Thick bread slices dipped in spiced gram flour batter, deep fried.' },
+        { id: 'mb-296', name: 'Mirchi Bajji (4 pcs)', price: 0, rating: 4.4, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', description: 'Large green chillies stuffed with potato, dipped in batter and fried.' }
+      ]
+    },
+    {
+      id: 'stall-25',
+      name: 'Punjabi Dhaba Express',
+      category: 'North Indian Thali',
+      location: 'Baghpat Road, Meerut',
+      rating: 4.7,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80',
+      description: 'Rich punjabi thali with sarson saag, makki roti, dal makhani and lassi.',
+      items: [
+        { id: 'mb-297', name: 'Sarson Saag with Makki Roti', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80', description: 'Classic punjabi mustard greens with butter and makki roti, jaggery on side.' },
+        { id: 'mb-298', name: 'Dal Makhani with Butter Naan', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80', description: 'Slow-cooked black lentils in creamy tomato gravy with butter naan.' },
+        { id: 'mb-299', name: 'Pindi Chole with Bhature (2 pcs)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', description: 'Spicy rawalpindi-style chole with fluffy deep-fried bhature.' },
+        { id: 'mb-300', name: 'Punjabi Sweet Lassi (Large)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?auto=format&fit=crop&w=800&q=80', description: 'Thick sweet yogurt drink topped with malai and crushed dry fruits.' }
+      ]
+    },
+    {
+      id: 'stall-26',
+      name: 'Ice Cream & Falooda Corner',
+      category: 'Sweets & Desserts',
+      location: 'Hapur Road, Meerut',
+      rating: 4.5,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1567206563064-6f60f40f2b54?auto=format&fit=crop&w=800&q=80',
+      description: 'Premium ice cream tubs, sundae specials and chilling falooda for dessert lovers.',
+      items: [
+        { id: 'mb-301', name: 'Chocolate Brownie Sundae', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1567206563064-6f60f40f2b54?auto=format&fit=crop&w=800&q=80', description: 'Warm brownie with chocolate ice cream, fudge sauce and whipped cream.' },
+        { id: 'mb-302', name: 'Strawberry Ice Cream Tub (500ml)', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1567206563064-6f60f40f2b54?auto=format&fit=crop&w=800&q=80', description: 'Fresh strawberry ice cream with real fruit pieces and creamy base.' },
+        { id: 'mb-303', name: 'Kesar Pista Falooda', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Saffron-pistachio falooda with vermicelli, basil seeds and ice cream.' },
+        { id: 'mb-304', name: 'Gulab Jamun with Ice Cream', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Hot gulab jamun served over vanilla ice cream — hot and cold combo.' }
+      ]
     }
   ];
 

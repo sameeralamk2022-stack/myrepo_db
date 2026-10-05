@@ -50,6 +50,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
   const [bookedOrderId, setBookedOrderId] = useState('');
   const [detecting, setDetecting] = useState(false);
   const [gpsStatus, setGpsStatus] = useState<{ type: 'success' | 'error' | ''; msg: string }>({ type: '', msg: '' });
+  const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const canOrder = isWithinOperatingHours();
   const { isDayTime } = getDeliveryRate();
@@ -82,6 +83,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
         const { latitude, longitude } = pos.coords;
         const mapUrl = `https://www.google.com/maps?q=${latitude.toFixed(6)},${longitude.toFixed(6)}&z=16`;
         setDropAddress(mapUrl);
+        setGpsCoords({ lat: latitude, lng: longitude });
         setGpsStatus({ type: 'success', msg: `Location detected: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
         setDetecting(false);
       },

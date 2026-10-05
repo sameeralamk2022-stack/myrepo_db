@@ -143,7 +143,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
       </div>
 
       <div className="relative z-10 w-full max-w-[380px] mx-auto my-auto px-2">
-        {/* 3D Floating Logo */}
+        {/* 3D Floating Logo - Delivery Basket Brand */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,12 +153,13 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
             animate={{ rotateY: [0, 360] }}
             transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
             style={{ transformStyle: 'preserve-3d' }}
-            className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-300 p-1 shadow-2xl shadow-amber-500/40 flex items-center justify-center mb-2"
+            className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-300 p-1.5 shadow-2xl shadow-amber-500/50 flex items-center justify-center mb-2"
           >
-            <div className="w-full h-full rounded-xl bg-slate-950 flex items-center justify-center border border-amber-400/50">
-              <ShoppingBasket className="w-8 h-8 text-amber-400" />
+            <div className="w-full h-full rounded-2xl bg-slate-950 flex items-center justify-center border-2 border-amber-400/50">
+              <ShoppingBasket className="w-10 h-10 text-amber-400" />
             </div>
           </motion.div>
+          <h1 className="text-lg font-black text-white tracking-tight mb-1">Meerut Bites</h1>
           <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black uppercase tracking-widest text-center">
             <Sparkles className="w-3 h-3 shrink-0" />
             <span>Meerut's #1 Street Food Delivery</span>
