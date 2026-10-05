@@ -198,6 +198,118 @@ export function StallsPage({ setCurrentPage }: { setCurrentPage?: (page: string)
         { id: 'mb-239', name: 'Mysore Masala Dosa', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Spicy red chutney smeared dosa with potato filling and sambar.' },
         { id: 'mb-240', name: 'Rava Dosa with Chutney', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Semolina crispy dosa with onion, green chilli and coconut chutney.' }
       ]
+    },
+    {
+      id: 'stall-11',
+      name: 'Khan Rolls & Kebabs',
+      category: 'Mughlai & Rolls',
+      location: 'Hapur Road, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
+      description: 'Jumbo rolls, seekh kebabs and tangdi grilled to perfection on live coal.',
+      items: [
+        { id: 'mb-241', name: 'Chicken Seekh Kebab Roll', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Juicy seekh kebab wrapped in flaky paratha with onion and mint chutney.' },
+        { id: 'mb-242', name: 'Mutton Tangdi Kebab (2 pcs)', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Char-grilled marinated chicken legs with smoky spice rub.' },
+        { id: 'mb-243', name: 'Double Veg Roll Special', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', description: 'Spiced paneer and veggie roll with tangy sauces and crunchy salad.' },
+        { id: 'mb-244', name: 'Reshmi Tikka Kebab (6 pcs)', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', description: 'Creamy marinated chicken tikka grilled in tandoor with bell peppers.' }
+      ]
+    },
+    {
+      id: 'stall-12',
+      name: 'Burger Bite Meerut',
+      category: 'Fast Food & Momos',
+      location: 'Modinagar Road, Meerut',
+      rating: 4.6,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=800&q=80',
+      description: 'Loaded burgers, crispy fries and thick shakes served fresh and hot.',
+      items: [
+        { id: 'mb-245', name: 'Classic Veg Burger with Fries', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=800&q=80', description: 'Crispy veg patty with cheese, lettuce and tangy mayo in a toasted bun.' },
+        { id: 'mb-246', name: 'Double Cheese Chicken Burger', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=800&q=80', description: 'Twin grilled chicken patties with double cheese and smoky BBQ sauce.' },
+        { id: 'mb-247', name: 'Peri Peri French Fries', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80', description: 'Golden crispy fries tossed in fiery peri peri seasoning.' },
+        { id: 'mb-248', name: 'Chocolate Thick Shake', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1572490122747-3968b75ccf99?auto=format&fit=crop&w=800&q=80', description: 'Rich chocolate milkshake topped with whipped cream and chocolate syrup.' }
+      ]
+    },
+    {
+      id: 'stall-13',
+      name: 'Sharma Ji Bedmi Puri',
+      category: 'North Indian Thali',
+      location: 'Kachehri Nagar, Meerut',
+      rating: 4.7,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1633945274309-2c16c96cdca4?auto=format&fit=crop&w=800&q=80',
+      description: 'Famous bedmi puri with aloo sabzi, halwa and chutney — a Meerut breakfast legend.',
+      items: [
+        { id: 'mb-249', name: 'Bedmi Puri with Aloo Sabzi (4 pcs)', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96cdca4?auto=format&fit=crop&w=800&q=80', description: 'Urad dal stuffed puris served with spicy potato curry and tangy chutney.' },
+        { id: 'mb-250', name: 'Nagori Halwa Puri Combo', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96cdca4?auto=format&fit=crop&w=800&q=80', description: 'Traditional nagori puri with sooji halwa and aloo sabzi — a classic combo.' },
+        { id: 'mb-251', name: 'Kachori Sabzi (3 pcs)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80', description: 'Crispy lentil kachoris with spicy potato-onion gravy.' },
+        { id: 'mb-252', name: 'Poha with Sev & Jalebi', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1633945274309-2c16c96e2f69?auto=format&fit=crop&w=800&q=80', description: 'Fluffy flattened rice with sev, lemon and sweet jalebi on the side.' }
+      ]
+    },
+    {
+      id: 'stall-14',
+      name: 'Cool Point Shakes & Juice',
+      category: 'Beverages & Snacks',
+      location: 'Gandhi Bagh, Meerut',
+      rating: 4.6,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80',
+      description: 'Fresh fruit juices, thick shakes and refreshing mocktails to beat the heat.',
+      items: [
+        { id: 'mb-253', name: 'Fresh Mango Shake (Large)', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80', description: 'Thick mango shake made with fresh alphonso mango and milk.' },
+        { id: 'mb-254', name: 'Mixed Fruit Fresh Juice', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1622592089000-94d28c2b5866?auto=format&fit=crop&w=800&q=80', description: 'Freshly squeezed seasonal fruits — orange, pomegranate and apple.' },
+        { id: 'mb-255', name: 'Cold Coffee with Ice Cream', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16bbba?auto=format&fit=crop&w=800&q=80', description: 'Creamy cold coffee blended with vanilla ice cream and chocolate sauce.' },
+        { id: 'mb-256', name: 'Rose Mojito Mocktail', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1551024709-8f23bef04672?auto=format&fit=crop&w=800&q=80', description: 'Refreshing rose syrup mocktail with mint, lemon and soda.' }
+      ]
+    },
+    {
+      id: 'stall-15',
+      name: 'Tandoori Nights',
+      category: 'Mughlai & Rolls',
+      location: 'Delhi Road, Meerut',
+      rating: 4.8,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80',
+      description: 'Sizzling tandoori platters, malai tikka and smoky kebabs from a live tandoor.',
+      items: [
+        { id: 'mb-257', name: 'Tandoori Chicken Half', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80', description: 'Classic tandoori chicken marinated in yogurt and spices, roasted in clay oven.' },
+        { id: 'mb-258', name: 'Malai Paneer Tikka (8 pcs)', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80', description: 'Creamy malai marinated paneer cubes grilled with capsicum and onion.' },
+        { id: 'mb-259', name: 'Tandoori Mushroom Platter', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80', description: 'Stuffed mushrooms marinated in tandoori masala and grilled to smoky perfection.' },
+        { id: 'mb-260', name: 'Fish Amritsari Tikka', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80', description: 'Crispy batter-fried fish tikka with carom seeds and lemon wedges.' }
+      ]
+    },
+    {
+      id: 'stall-16',
+      name: 'Dosa Plaza Meerut',
+      category: 'South Indian',
+      location: 'Pallavpuram, Meerut',
+      rating: 4.7,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80',
+      description: 'Fusion dosas, uttapam and filter coffee served with authentic sambar and chutneys.',
+      items: [
+        { id: 'mb-261', name: 'Spring Dosa with Cheese', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Crispy dosa stuffed with noodle-style veg filling and melted cheese.' },
+        { id: 'mb-262', name: 'Uttapam with Tomato Onion', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Thick pancake-style dosa topped with onion, tomato and green chilli.' },
+        { id: 'mb-263', name: 'Mini Idli Sambar (12 pcs)', price: 0, rating: 4.5, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Bite-sized idlis soaked in hot sambar with coconut chutney.' },
+        { id: 'mb-264', name: 'Filter Coffee (Kulhad)', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5979?auto=format&fit=crop&w=800&q=80', description: 'Authentic South Indian filter coffee served in traditional clay cup.' }
+      ]
+    },
+    {
+      id: 'stall-17',
+      name: 'Shahi Sweets & Falooda',
+      category: 'Sweets & Desserts',
+      location: 'Begumpul, Meerut',
+      rating: 4.7,
+      timing: '10:00 AM - 11:00 PM',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80',
+      description: 'Royal falooda, rabri, kulfis and traditional sweets to satisfy your sweet tooth.',
+      items: [
+        { id: 'mb-265', name: 'Royal Falooda with Ice Cream', price: 0, rating: 4.8, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Layered rose syrup, vermicelli, basil seeds and vanilla ice cream.' },
+        { id: 'mb-266', name: 'Malai Kulfi Falooda', price: 0, rating: 4.9, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Dense malai kulfi over vermicelli noodles with rose syrup drizzle.' },
+        { id: 'mb-267', name: 'Hot Rabri with Jalebi', price: 0, rating: 4.7, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Thick sweetened milk rabri served with crisp hot jalebis.' },
+        { id: 'mb-268', name: 'Gajar Ka Halwa (Seasonal)', price: 0, rating: 4.6, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80', description: 'Slow-cooked grated carrots with milk, ghee, dry fruits and khoya.' }
+      ]
     }
   ];
 
