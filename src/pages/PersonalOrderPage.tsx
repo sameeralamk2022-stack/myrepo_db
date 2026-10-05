@@ -71,9 +71,16 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
     setItems(prev => prev.map(i => i.id === id ? { ...i, [field]: value } : i));
   };
 
+  const [showLocationModal, setShowLocationModal] = useState(false);
+
   const detectLocation = () => {
+    setShowLocationModal(true);
+  };
+
+  const requestLocationPermission = () => {
     if (!navigator.geolocation) {
       setGpsStatus({ type: 'error', msg: 'GPS is not supported on this device.' });
+      setShowLocationModal(false);
       return;
     }
     setDetecting(true);
@@ -86,10 +93,11 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
         setGpsCoords({ lat: latitude, lng: longitude });
         setGpsStatus({ type: 'success', msg: `Location detected: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
         setDetecting(false);
+        setShowLocationModal(false);
       },
       (err) => {
         let msg = 'Could not detect your location. Please enter the address manually.';
-        if (err.code === 1) msg = 'Permission denied. Please allow location access in your browser settings.';
+        if (err.code === 1) msg = 'Location permission denied. Tap the lock/icon in your browser address bar, select Allow for Location, then try again.';
         if (err.code === 2) msg = 'Position unavailable. Check your GPS or network connection.';
         if (err.code === 3) msg = 'Location request timed out. Please try again.';
         setGpsStatus({ type: 'error', msg });
@@ -483,6 +491,55 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
           </>
         )}
       </div>
+
+      {/* Location Permission Popup */}
+      {showLocationModal && (
+        <div className="fixed inset-0 z-[70] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => !detecting && setShowLocationModal(false)}>
+          <div
+            className="bg-slate-900 border border-teal-500/30 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center">
+                <Crosshair className="w-7 h-7 text-teal-400" />
+              </div>
+              <h3 className="text-sm font-black text-white">Allow Location Access?</h3>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                We need your location to auto-fill your delivery address and send precise GPS coordinates to the delivery captain. This helps them find you quickly.
+              </p>
+            </div>
+
+            {gpsStatus.type === 'error' && (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+                <p className="text-[10px] text-amber-400 font-bold leading-relaxed">{gpsStatus.msg}</p>
+                <div className="text-[10px] text-slate-400 leading-relaxed">
+                  <p className="font-bold text-slate-300 mb-1">How to re-enable:</p>
+                  <p>1. Tap the lock or location icon in your browser's address bar</p>
+                  <p>2. Change "Location" to "Allow"</p>
+                  <p>3. Refresh the page and try again</p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowLocationModal(false)}
+                disabled={detecting}
+                className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={requestLocationPermission}
+                disabled={detecting}
+                className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-xl text-xs font-black cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {detecting ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Detecting...</> : <><Crosshair className="w-3.5 h-3.5" /> Allow</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
