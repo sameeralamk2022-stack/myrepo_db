@@ -18,16 +18,23 @@ import {
   Zap,
   Heart,
   Award,
+  Store,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { useCountUp } from '@/hooks/useCountUp';
 
 interface HomePageProps {
   setCurrentPage: (page: 'home' | 'stalls' | 'dashboard' | 'orders' | 'custom' | 'settings' | 'simple' | 'personal' | 'disclaimer') => void;
 }
 
 export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
-  const { profile } = useApp();
+  const { profile, orders } = useApp();
   const displayName = profile.name || 'Guest';
+
+  const animatedOrders = useCountUp(15240, 2500);
+  const animatedStalls = useCountUp(26, 1800);
+  const animatedRating = useCountUp(48, 1500);
+  const animatedCustomers = useCountUp(8200, 2200);
 
   const getISTDetails = () => {
     try {
@@ -349,21 +356,42 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
           </div>
         </div>
 
-        {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-            <Star className="w-3 h-3 text-amber-400" />
-            <span>4.8 Rating</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-            <Heart className="w-3 h-3 text-rose-400" />
-            <span>15,000+ Orders Served</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-            <Award className="w-3 h-3 text-teal-400" />
-            <span>Meerut's Trusted Delivery</span>
-          </div>
+        {/* Animated Stats Counters */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          {[
+            { icon: Heart, color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/30', value: animatedOrders, suffix: '+', label: 'Orders Served' },
+            { icon: Store, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/30', value: animatedStalls, suffix: '', label: 'Food Stalls' },
+            { icon: Star, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/30', value: animatedRating, suffix: '', label: 'Rating (x10)', decimal: true },
+            { icon: Award, color: 'text-teal-400', bg: 'bg-teal-500/10 border-teal-500/30', value: animatedCustomers, suffix: '+', label: 'Happy Customers' },
+          ].map((stat, idx) => {
+            const StatIcon = stat.icon;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.5 + idx * 0.1, type: 'spring' }}
+                className={`rounded-2xl border p-3 sm:p-4 text-center space-y-1.5 ${stat.bg}`}
+              >
+                <div className="flex items-center justify-center">
+                  <StatIcon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.color}`} />
+                </div>
+                <div className={`text-xl sm:text-2xl font-black ${stat.color} tabular-nums`}>
+                  {stat.decimal ? (stat.value / 10).toFixed(1) : stat.value.toLocaleString()}{stat.suffix}
+                </div>
+                <div className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider">{stat.label}</div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Live order count */}
+        {orders.length > 0 && (
+          <div className="flex items-center justify-center gap-1.5 pt-1 text-[10px] text-emerald-400 font-bold">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{orders.length} active order{orders.length > 1 ? 's' : ''} in your queue</span>
+          </div>
+        )}
       </div>
     </div>
   );

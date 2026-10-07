@@ -38,7 +38,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem('mb_orders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const [profile, setProfile] = useState<Profile>(() => {
@@ -66,6 +73,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try { localStorage.setItem('mb_profile', JSON.stringify(profile)); } catch {}
   }, [profile]);
+
+  useEffect(() => {
+    try { localStorage.setItem('mb_orders', JSON.stringify(orders)); } catch {}
+  }, [orders]);
 
   useEffect(() => {
     try { localStorage.setItem('mb_darkMode', JSON.stringify(darkMode)); } catch {}
@@ -120,9 +131,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setProfile({ name: '', phone: '' });
     setCart([]);
+    setOrders([]);
     try {
       localStorage.removeItem('mb_profile');
       localStorage.removeItem('mb_cart');
+      localStorage.removeItem('mb_orders');
     } catch {}
   };
 

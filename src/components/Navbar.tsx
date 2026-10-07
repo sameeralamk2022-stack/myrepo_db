@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, ShoppingBasket, LogOut, User as UserIcon, Sun, Moon, ShieldCheck } from 'lucide-react';
+import { Home, Store, LayoutDashboard, Package, Sparkles, Settings, ShoppingBag, ShoppingBasket, QrCode, LogOut, User as UserIcon, Sun, Moon, ShieldCheck } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 interface NavbarProps {
@@ -25,6 +25,7 @@ export function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
     { id: 'orders', label: 'Orders', icon: Package },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'disclaimer', label: 'Hygiene', icon: ShieldCheck },
+    { id: 'qr', label: 'QR', icon: QrCode },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

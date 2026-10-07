@@ -11,6 +11,7 @@ import { OrdersPage } from '@/pages/OrdersPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { DisclaimerPage } from '@/pages/DisclaimerPage';
+import { QrPage } from '@/pages/QrPage';
 import { PaymentCard } from '@/components/PaymentCard';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
@@ -81,6 +82,7 @@ function AppContent() {
         {currentPage === 'orders' && isLoggedIn && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
         {currentPage === 'settings' && isLoggedIn && <SettingsPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'disclaimer' && isLoggedIn && <DisclaimerPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'qr' && isLoggedIn && <QrPage onBack={() => setCurrentPage('home')} />}
         {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
         {currentPage === 'payment' && isLoggedIn && (
           <div className="max-w-xl mx-auto p-4 py-8">
