@@ -293,6 +293,51 @@ export function HomePage({ setCurrentPage }: HomePageProps): JSX.Element {
         </div>
       </div>
 
+      {/* How It Works Infographic */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+        <div className="rounded-3xl overflow-hidden border border-amber-500/20 shadow-2xl">
+          <div className="relative">
+            <img
+              src="https://images.pexels.com/photos/39978119/pexels-photo-39978119.jpeg?auto=compress&cs=tinysrgb&h=400&w=940"
+              alt="Food delivery in Meerut"
+              className="w-full h-40 sm:h-52 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <h3 className="text-sm sm:text-lg font-black text-white mb-2 flex items-center gap-2">
+                <Flame className="w-4 h-4 text-amber-400" />
+                How Meerut Bites Works
+              </h3>
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { step: '1', label: 'Browse', icon: Utensils },
+                  { step: '2', label: 'Order', icon: ShoppingBasket },
+                  { step: '3', label: 'Pick Up', icon: Package },
+                  { step: '4', label: 'Deliver', icon: MapPin },
+                ].map((s) => {
+                  const StepIcon = s.icon;
+                  return (
+                    <motion.div
+                      key={s.step}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.0 + parseInt(s.step) * 0.1 }}
+                      className="flex flex-col items-center gap-1 p-2 rounded-xl bg-slate-950/80 backdrop-blur-sm border border-amber-500/20"
+                    >
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
+                        <StepIcon className="w-3.5 h-3.5 text-amber-400" />
+                      </div>
+                      <span className="text-[8px] sm:text-[9px] font-black text-white uppercase tracking-wider">{s.label}</span>
+                      <span className="text-[7px] text-amber-400 font-black">Step {s.step}</span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Navigation Hub Cards */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         <div className="flex items-center justify-between">

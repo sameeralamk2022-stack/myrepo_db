@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { QrCode, Copy, Check, Download, Share2, ArrowLeft } from 'lucide-react';
+import { QrCode, Copy, Check, Download, Share2, ArrowLeft, Phone, User, Package, IndianRupee } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
-import { UPI_ID } from '@/lib/constants';
+import { UPI_ID, APP_NAME } from '@/lib/constants';
 
 interface QrPageProps {
   onBack?: () => void;
@@ -43,14 +43,41 @@ export function QrPage({ onBack }: QrPageProps) {
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
-  const upiValue = `upi://pay?pa=${UPI_ID}&pn=Meerut%20Bites`;
-  const profileValue = JSON.stringify({ name: profile?.name || 'Guest', phone: profile?.phone || '' });
+  const upiValue = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(APP_NAME)}&cu=INR`;
+  const profileValue = `MEERUT_BITES_PROFILE\nName: ${profile?.name || 'Guest'}\nPhone: ${profile?.phone || 'N/A'}\nApp: ${APP_NAME}`;
   const latestOrder = orders[0];
-  const orderValue = latestOrder ? latestOrder.id : 'No orders yet';
+  const orderValue = latestOrder
+    ? `MEERUT_BITES_ORDER\nOrder ID: ${latestOrder.id}\nCustomer: ${latestOrder.customerName || latestOrder.stallName || 'N/A'}\nStatus: ${latestOrder.status || 'Requested'}\nPayment: ${latestOrder.paymentMethod || 'N/A'}\nTotal: Rs.${latestOrder.grandTotal || 'TBD'}\nDate: ${new Date(latestOrder.createdAt || Date.now()).toLocaleString()}`
+    : 'No orders yet';
 
   const currentQR = activeTab === 'upi' ? upiValue : activeTab === 'profile' ? profileValue : orderValue;
   const currentLabel = activeTab === 'upi' ? 'UPI Payment' : activeTab === 'profile' ? 'My Profile' : 'Latest Order';
-  const currentCopy = activeTab === 'upi' ? UPI_ID : activeTab === 'profile' ? (profile?.phone || '') : orderValue;
+  const currentCopy = activeTab === 'upi' ? UPI_ID : activeTab === 'profile' ? (profile?.phone || '') : (latestOrder?.id || '');
+
+  const detailLines: { icon: typeof User; label: string; value: string }[] = [];
+  if (activeTab === 'upi') {
+    detailLines.push(
+      { icon: IndianRupee, label: 'UPI ID', value: UPI_ID },
+      { icon: User, label: 'Pay To', value: APP_NAME },
+      { icon: QrCode, label: 'Currency', value: 'INR (Rs.)' },
+    );
+  } else if (activeTab === 'profile') {
+    detailLines.push(
+      { icon: User, label: 'Name', value: profile?.name || 'Not set' },
+      { icon: Phone, label: 'Phone', value: profile?.phone || 'Not set' },
+    );
+  } else {
+    if (latestOrder) {
+      detailLines.push(
+        { icon: Package, label: 'Order ID', value: latestOrder.id },
+        { icon: User, label: 'Customer', value: latestOrder.customerName || 'N/A' },
+        { icon: IndianRupee, label: 'Amount', value: `Rs. ${latestOrder.grandTotal || 'TBD'}` },
+        { icon: QrCode, label: 'Status', value: latestOrder.status || 'Requested' },
+      );
+    } else {
+      detailLines.push({ icon: Package, label: 'Status', value: 'No orders placed yet' });
+    }
+  }
 
   const tabs = [
     { key: 'upi' as const, label: 'UPI Pay' },
@@ -117,6 +144,20 @@ export function QrPage({ onBack }: QrPageProps) {
             </div>
           </div>
 
+          {/* Detailed info shown below QR */}
+          <div className="space-y-2 mb-6 text-left">
+            {detailLines.map((detail, idx) => {
+              const DetailIcon = detail.icon;
+              return (
+                <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800">
+                  <DetailIcon className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">{detail.label}</span>
+                  <span className="text-[11px] text-white font-bold ml-auto break-all text-right">{detail.value}</span>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="flex items-center justify-center gap-2 mb-6">
             <span className="text-white font-mono text-xs break-all">{currentCopy || 'N/A'}</span>
             {currentCopy && (
@@ -163,10 +204,10 @@ export function QrPage({ onBack }: QrPageProps) {
               >
                 <div>
                   <p className="text-white text-xs font-mono font-bold">{order.id}</p>
-                  <p className="text-slate-500 text-[10px]">{order.items || 'N/A'}</p>
+                  <p className="text-slate-500 text-[10px]">{order.items || order.stallName || 'N/A'}</p>
                 </div>
                 <div className="rounded-lg bg-white p-1.5">
-                  <QRCodeSVG value={order.id} size={48} level="L" bgColor="#ffffff" fgColor="#000000" />
+                  <QRCodeSVG value={`MEERUT_BITES_ORDER\nOrder ID: ${order.id}\nStatus: ${order.status || 'Requested'}`} size={48} level="L" bgColor="#ffffff" fgColor="#000000" />
                 </div>
               </div>
             ))}
