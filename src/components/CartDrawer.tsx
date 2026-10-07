@@ -42,6 +42,7 @@ export function CartDrawer() {
   const [detecting, setDetecting] = useState(false);
   const [gpsStatus, setGpsStatus] = useState<{ type: 'success' | 'error' | ''; msg: string }>({ type: '', msg: '' });
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   if (!isCartOpen) return null;
 
@@ -53,8 +54,6 @@ export function CartDrawer() {
   const availablePayments = isDayTime
     ? [{ id: 'cod' as const, label: 'Cash on Delivery' }, { id: 'upi' as const, label: 'UPI QR Pay' }]
     : [{ id: 'upi' as const, label: 'UPI QR Pay' }];
-
-  const [showLocationModal, setShowLocationModal] = useState(false);
 
   const detectLocation = () => {
     setShowLocationModal(true);
