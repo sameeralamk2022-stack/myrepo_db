@@ -51,15 +51,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 function AppContent() {
   const { profile } = useApp();
   const isLoggedIn = !!(profile?.name && profile?.phone);
-  const [currentPage, setCurrentPage] = useState<string>(isLoggedIn ? 'home' : 'login');
+  const [currentPage, setCurrentPage] = useState<string>('login');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cod' | 'upi'>('upi');
 
   useEffect(() => {
     if (!isLoggedIn && currentPage !== 'login') {
       setCurrentPage('login');
-    }
-    if (isLoggedIn && currentPage === 'login') {
-      setCurrentPage('home');
     }
   }, [isLoggedIn, currentPage]);
 

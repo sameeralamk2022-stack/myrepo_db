@@ -5,13 +5,13 @@ import { useApp } from '@/context/AppContext';
 
 export function WhatsAppChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useApp() as any;
+  const { profile } = useApp();
 
-  const [userName] = useState(user?.name || 'Nauman Alam Khan');
-  const [userPhone, setUserPhone] = useState(user?.phone || '');
-  const [userZone] = useState(user?.zone || 'Meerut Cantt / Civil Lines');
+  const [userName] = useState(profile?.name || 'Guest');
+  const [userPhone, setUserPhone] = useState(profile?.phone || '');
+  const [userZone] = useState('Meerut Cantt / Civil Lines');
   
-  const [isAskingForDetails, setIsAskingForDetails] = useState(!user?.phone);
+  const [isAskingForDetails, setIsAskingForDetails] = useState(!profile?.phone);
   const [activeItem, setActiveItem] = useState('Chole Bhature (₹140)');
   const [showQrDropdown, setShowQrDropdown] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
