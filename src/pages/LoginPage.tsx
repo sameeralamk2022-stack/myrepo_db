@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, CheckCircle2, User, Phone, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, MapPin, ShieldCheck, LogIn, UserPlus, Flame, Package } from 'lucide-react';
+import { CheckCircle2, User, Phone, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, MapPin, ShieldCheck, LogIn, Flame, Package } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { OWNER_NAME, APP_NAME } from '@/lib/constants';
 
@@ -9,58 +9,12 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ setCurrentPage }: LoginPageProps) {
-  const { profile, setProfile } = useApp();
-  const isRegistered = !!(profile?.name && profile?.phone);
-  const [mode, setMode] = useState<'login' | 'register'>(isRegistered ? 'login' : 'register');
-  const [name, setName] = useState(profile?.name || '');
-  const [phone, setPhone] = useState(profile?.phone || '');
-  const [loading, setLoading] = useState(false);
+  const { profile } = useApp();
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (isRegistered) {
-      setMode('login');
-      setName(profile?.name || '');
-      setPhone(profile?.phone || '');
-    } else {
-      setMode('register');
-    }
-  }, [isRegistered, profile?.name, profile?.phone]);
+  const isRegistered = !!(profile?.name && profile?.phone);
 
   const enterApp = () => {
     if (typeof setCurrentPage === 'function') setCurrentPage('home');
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      setTimeout(() => enterApp(), 1000);
-    }, 600);
-  };
-
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !phone.trim()) {
-      setError('Please enter both your name and phone number.');
-      return;
-    }
-    if (phone.replace(/\D/g, '').length < 10) {
-      setError('Please enter a valid phone number (at least 10 digits).');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    setTimeout(() => {
-      setProfile({ name: name.trim(), phone: phone.trim() });
-      setLoading(false);
-      setSuccess(true);
-      setTimeout(() => enterApp(), 1200);
-    }, 800);
   };
 
   const heroImage = 'https://images.pexels.com/photos/39025942/pexels-photo-39025942.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
@@ -89,7 +43,6 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
           className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-gradient-to-tr from-teal-400/30 to-emerald-500/20 blur-3xl"
         />
 
-        {/* 3D perspective grid */}
         <div
           className="absolute bottom-0 left-0 right-0 h-1/2 opacity-20"
           style={{
@@ -104,7 +57,6 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
           }} />
         </div>
 
-        {/* Floating food icons - hidden on small screens */}
         <motion.div
           animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
@@ -136,7 +88,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
       </div>
 
       <div className="relative z-10 w-full max-w-[420px] mx-auto my-auto px-2">
-        {/* 3D Floating Logo - Delivery Basket Brand */}
+        {/* 3D Floating Logo */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -192,7 +144,6 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
           animate={{ opacity: 1, y: 0 }}
           className="rounded-3xl bg-slate-900/95 backdrop-blur-xl border border-teal-500/30 shadow-2xl overflow-hidden"
         >
-          {/* Header banner */}
           <div className="relative h-20 w-full overflow-hidden bg-gradient-to-r from-[#005f60] to-[#004849]">
             <img src={deliveryImage} alt="Food delivery" className="w-full h-full object-cover opacity-30" />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -218,120 +169,61 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                     <CheckCircle2 className="w-7 h-7 text-emerald-400" />
                   </div>
                   <p className="text-white font-black text-xs">
-                    {mode === 'register' ? `Welcome, ${name}!` : `Welcome back, ${profile?.name}!`}
+                    {isRegistered ? `Welcome back, ${profile?.name}!` : `Welcome to ${APP_NAME}!`}
                   </p>
                   <p className="text-teal-300 text-[10px] mt-1 font-bold">Entering app...</p>
                 </motion.div>
-              ) : mode === 'login' && isRegistered ? (
-                /* === RETURNING USER: SHOW WELCOME + ENTER APP BUTTON === */
+              ) : (
                 <motion.div
-                  key="login"
+                  key="welcome"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="space-y-4"
                 >
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl text-center"
-                  >
-                    <div className="flex items-center justify-center gap-2.5 mb-2">
-                      <div className="w-11 h-11 rounded-full bg-teal-500/20 border border-teal-500/40 flex items-center justify-center">
-                        <User className="w-5 h-5 text-teal-400" />
+                  {isRegistered && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl text-center"
+                    >
+                      <div className="flex items-center justify-center gap-2.5 mb-2">
+                        <div className="w-11 h-11 rounded-full bg-teal-500/20 border border-teal-500/40 flex items-center justify-center">
+                          <User className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-black text-white">{profile.name}</p>
+                          <p className="text-[10px] text-teal-300 font-bold">{profile.phone}</p>
+                        </div>
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm font-black text-white">{profile.name}</p>
-                        <p className="text-[10px] text-teal-300 font-bold">{profile.phone}</p>
-                      </div>
+                      <p className="text-[11px] text-teal-300 font-bold">Welcome back!</p>
+                    </motion.div>
+                  )}
+
+                  {!isRegistered && (
+                    <div className="flex items-center gap-2 mb-1">
+                      <Sparkles className="w-4 h-4 text-teal-400" />
+                      <h3 className="text-xs font-black text-teal-300 uppercase tracking-wider">Welcome to Meerut Bites</h3>
                     </div>
-                    <p className="text-[11px] text-teal-300 font-bold">
-                      Welcome back! You're already registered.
+                  )}
+
+                  {!isRegistered && (
+                    <p className="text-[10px] text-slate-400 font-bold leading-relaxed">
+                      Browse stalls, add items to your cart, and order in seconds. You'll just need your name and phone number when confirming your order — no signup required!
                     </p>
-                  </motion.div>
+                  )}
 
                   <button
-                    onClick={enterApp}
+                    onClick={() => {
+                      setSuccess(true);
+                      setTimeout(() => enterApp(), 800);
+                    }}
                     className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm uppercase tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/30"
                   >
                     <LogIn className="w-4 h-4" />
                     <span>Enter App</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-
-                  <div className="text-center pt-1">
-                    <button
-                      onClick={() => setMode('register')}
-                      className="text-[10px] text-teal-300 hover:text-teal-200 font-bold cursor-pointer underline underline-offset-2"
-                    >
-                      Not you? Register new account
-                    </button>
-                  </div>
-                </motion.div>
-              ) : (
-                /* === NEW USER: REGISTRATION FORM === */
-                <motion.div
-                  key="register"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-3"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <UserPlus className="w-4 h-4 text-teal-400" />
-                    <h3 className="text-xs font-black text-teal-300 uppercase tracking-wider">One-Time Registration</h3>
-                  </div>
-                  <p className="text-[10px] text-slate-400 font-bold mb-2">
-                    Enter your name and phone number once. After this, you can login with a single tap.
-                  </p>
-
-                  <form onSubmit={handleRegister} className="space-y-2.5">
-                    <div className="relative">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-400" />
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter your full name"
-                        className="w-full pl-9 pr-3 py-3 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
-                        required
-                      />
-                    </div>
-                    <div className="relative">
-                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-400" />
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Enter your phone number"
-                        className="w-full pl-9 pr-3 py-3 rounded-xl bg-slate-950 border border-teal-500/30 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-teal-400 font-bold transition-all"
-                        required
-                      />
-                    </div>
-
-                    {error && (
-                      <p className="text-red-400 text-[10px] font-bold">{error}</p>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={loading || !name.trim() || !phone.trim()}
-                      className="w-full py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black disabled:opacity-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer shadow-lg shadow-teal-500/30"
-                    >
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><UserPlus className="w-4 h-4" /><span>Register & Continue</span></>}
-                    </button>
-                  </form>
-
-                  {isRegistered && (
-                    <div className="text-center pt-1">
-                      <button
-                        onClick={() => setMode('login')}
-                        className="text-[10px] text-teal-300 hover:text-teal-200 font-bold cursor-pointer underline underline-offset-2"
-                      >
-                        Back to login
-                      </button>
-                    </div>
-                  )}
                 </motion.div>
               )}
             </AnimatePresence>

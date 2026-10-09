@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
 import { AppProvider, useApp } from '@/context/AppContext';
 import { Navbar } from '@/components/Navbar';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -49,39 +49,31 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 }
 
 function AppContent() {
-  const { profile } = useApp();
-  const isLoggedIn = !!(profile?.name && profile?.phone);
-  const [currentPage, setCurrentPage] = useState<string>('login');
+  const [currentPage, setCurrentPage] = useState<string>('home');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cod' | 'upi'>('upi');
-
-  useEffect(() => {
-    if (!isLoggedIn && currentPage !== 'login') {
-      setCurrentPage('login');
-    }
-  }, [isLoggedIn, currentPage]);
 
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
-      {currentPage !== 'login' && isLoggedIn && (
+      {currentPage !== 'login' && (
         <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       )}
 
       <main className="flex-1 flex flex-col overflow-y-auto">
-        {currentPage === 'home' && isLoggedIn && <HomePage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'stalls' && isLoggedIn && <StallsPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'personal' && isLoggedIn && (
+        {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'stalls' && <StallsPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'personal' && (
           <PersonalOrderPage
             onBack={() => setCurrentPage('stalls')}
             onProceedToOrders={() => setCurrentPage('orders')}
           />
         )}
-        {currentPage === 'dashboard' && isLoggedIn && <DashboardPage />}
-        {currentPage === 'orders' && isLoggedIn && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
-        {currentPage === 'settings' && isLoggedIn && <SettingsPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'disclaimer' && isLoggedIn && <DisclaimerPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'qr' && isLoggedIn && <QrPage onBack={() => setCurrentPage('home')} />}
+        {currentPage === 'dashboard' && <DashboardPage />}
+        {currentPage === 'orders' && <OrdersPage onNavigateStalls={() => setCurrentPage('stalls')} />}
+        {currentPage === 'settings' && <SettingsPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'disclaimer' && <DisclaimerPage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'qr' && <QrPage onBack={() => setCurrentPage('home')} />}
         {currentPage === 'login' && <LoginPage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'payment' && isLoggedIn && (
+        {currentPage === 'payment' && (
           <div className="max-w-xl mx-auto p-4 py-8">
             <PaymentCard
               selectedMethod={selectedPaymentMethod}
@@ -91,7 +83,7 @@ function AppContent() {
         )}
       </main>
 
-      {currentPage !== 'login' && isLoggedIn && (
+      {currentPage !== 'login' && (
         <>
           <CartDrawer />
           <WhatsAppChatWidget />

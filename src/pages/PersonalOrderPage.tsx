@@ -38,7 +38,7 @@ interface PersonalOrderPageProps {
 }
 
 export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPageProps) {
-  const { addOrder, profile } = useApp();
+  const { addOrder, profile, setProfile } = useApp();
   const [items, setItems] = useState([{ id: '1', name: '', quantity: 1, notes: '' }]);
   const [shopName, setShopName] = useState('');
   const [pickupAddress, setPickupAddress] = useState('');
@@ -110,6 +110,18 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
   const handleSubmit = () => {
     if (!canOrder) {
       alert('Orders are only accepted between 10:00 AM and 11:00 PM.');
+      return;
+    }
+    if (!profile?.name || !profile?.phone) {
+      const enteredName = prompt('Enter your full name to confirm this order:');
+      if (!enteredName || !enteredName.trim()) return;
+      const enteredPhone = prompt('Enter your phone number (at least 10 digits):');
+      if (!enteredPhone || enteredPhone.replace(/\D/g, '').length < 10) {
+        alert('A valid phone number is required to confirm your order.');
+        return;
+      }
+      setProfile({ name: enteredName.trim(), phone: enteredPhone.trim() });
+      alert('Details saved! Tap "Send Order" again to submit your order.');
       return;
     }
     if (!shopName.trim()) { alert('Please enter the shop name.'); return; }
