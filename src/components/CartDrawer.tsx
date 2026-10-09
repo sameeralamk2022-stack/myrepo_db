@@ -104,7 +104,7 @@ export function CartDrawer() {
         alert('A valid phone number is required to confirm your order.');
         return;
       }
-      setProfile({ name: enteredName.trim(), phone: enteredPhone.trim() });
+      setProfile(prev => ({ ...prev, name: enteredName.trim(), phone: enteredPhone.trim() }));
       alert('Details saved! Tap "Dispatch Order via WhatsApp" again to send your order.');
       return;
     }

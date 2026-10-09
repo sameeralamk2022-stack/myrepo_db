@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, User, Phone, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, MapPin, ShieldCheck, LogIn, Flame, Package } from 'lucide-react';
+import { CheckCircle2, User, ArrowRight, ShoppingBasket, Sparkles, Utensils, Clock, ShieldCheck, LogIn, Flame, Package } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { OWNER_NAME, APP_NAME } from '@/lib/constants';
 
@@ -169,7 +169,7 @@ export function LoginPage({ setCurrentPage }: LoginPageProps) {
                     <CheckCircle2 className="w-7 h-7 text-emerald-400" />
                   </div>
                   <p className="text-white font-black text-xs">
-                    {isRegistered ? `Welcome back, ${profile?.name}!` : `Welcome to ${APP_NAME}!`}
+                    {isRegistered ? `Welcome back, ${profile?.name}!` : `Entering Meerut Bites...`}
                   </p>
                   <p className="text-teal-300 text-[10px] mt-1 font-bold">Entering app...</p>
                 </motion.div>

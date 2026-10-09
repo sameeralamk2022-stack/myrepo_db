@@ -120,7 +120,7 @@ export function PersonalOrderPage({ onBack, onProceedToOrders }: PersonalOrderPa
         alert('A valid phone number is required to confirm your order.');
         return;
       }
-      setProfile({ name: enteredName.trim(), phone: enteredPhone.trim() });
+      setProfile(prev => ({ ...prev, name: enteredName.trim(), phone: enteredPhone.trim() }));
       alert('Details saved! Tap "Send Order" again to submit your order.');
       return;
     }
